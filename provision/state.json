@@ -1,0 +1,250 @@
+{
+  "intelligenceConfig": {
+    "at": "2026-10-22T15:34:38.027345+00:00",
+    "id": "intelligence_configuration_01m5j3zzkyf2ntpz934v8edse1",
+    "lastAction": "created",
+    "spec": {
+      "description": "HVAC concierge: live sentiment per utterance; summary, sentiment and lead qualification at call end.",
+      "displayName": "hvac-concierge-intelligence",
+      "rules": [
+        {
+          "actions": [
+            {
+              "method": "POST",
+              "type": "WEBHOOK",
+              "url": "https://hvac-concierge.twilio.dtolb.com/webhooks/intelligence"
+            }
+          ],
+          "operators": [
+            {
+              "id": "intelligence_operator_01kcrvw16kfa88qvgrfmr7y151"
+            }
+          ],
+          "triggers": [
+            {
+              "on": "COMMUNICATION",
+              "parameters": {
+                "count": 1
+              }
+            }
+          ]
+        },
+        {
+          "actions": [
+            {
+              "method": "POST",
+              "type": "WEBHOOK",
+              "url": "https://hvac-concierge.twilio.dtolb.com/webhooks/intelligence"
+            }
+          ],
+          "context": {
+            "memory": {
+              "enabled": true
+            }
+          },
+          "operators": [
+            {
+              "id": "intelligence_operator_01kcv35pnkeysaf6z6cqtbpegn"
+            },
+            {
+              "id": "intelligence_operator_01kcrvw16kfa88qvgrfmr7y151"
+            },
+            {
+              "id": "intelligence_operator_01m5j3zzbhex48xra3tzka6b8h"
+            }
+          ],
+          "triggers": [
+            {
+              "on": "CONVERSATION_END"
+            }
+          ]
+        }
+      ]
+    },
+    "specHash": "d805dd16d984947d"
+  },
+  "leadOperator": {
+    "at": "2026-10-22T15:34:37.732823+00:00",
+    "id": "intelligence_operator_01m5j3zzbhex48xra3tzka6b8h",
+    "lastAction": "created",
+    "spec": {
+      "author": "SELF",
+      "context": {
+        "knowledge": {
+          "enabled": false
+        },
+        "memory": {
+          "enabled": true
+        }
+      },
+      "description": "Extracts HVAC lead details and perceived purchase interest from a call.",
+      "displayName": "HVAC Lead Qualification",
+      "outputFormat": "JSON",
+      "outputSchema": {
+        "properties": {
+          "addressConfirmed": {
+            "type": "boolean"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "nextStep": {
+            "type": "string"
+          },
+          "purchaseInterest": {
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "purchaseInterestRationale": {
+            "type": "string"
+          },
+          "reasonForCalling": {
+            "type": "string"
+          },
+          "serviceAddress": {
+            "type": "string"
+          },
+          "serviceType": {
+            "enum": [
+              "REPLACEMENT",
+              "REPAIR",
+              "MAINTENANCE",
+              "INSTALLATION",
+              "QUOTE",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "urgency": {
+            "enum": [
+              "EMERGENCY",
+              "SOON",
+              "FLEXIBLE",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "prompt": "You analyze a phone call between a customer and the AI concierge of an HVAC (heating, ventilation and air conditioning) company.\n\nExtract the lead details the business needs to follow up:\n- customerName: the caller's full name as they gave it. Empty string if never given.\n- serviceAddress: the full service address (street, city, state, postal code) in one line. Empty string if never given.\n- addressConfirmed: true only if the agent read the address back and the caller agreed it was correct.\n- reasonForCalling: one sentence, in plain words, on why the customer called.\n- serviceType: the kind of work requested.\n- urgency: EMERGENCY if there is no heat or cooling in extreme weather, a gas smell, or a safety risk; SOON if they want it within days; FLEXIBLE otherwise.\n- purchaseInterest: how likely the caller is to buy. HIGH if they asked about pricing, financing or scheduling an install, or said they are ready to replace; MEDIUM if they are open but comparing options or want a quote first; LOW if they are only asking questions or pushing back on cost.\n- purchaseInterestRationale: one sentence quoting or paraphrasing what the caller said that supports the interest level.\n- nextStep: the follow-up the business should take, in one short sentence.\n\nUse UNKNOWN for an enum the conversation gives no evidence for. Never invent details the caller did not say."
+    },
+    "specHash": "4f582e3cfb3f31ba"
+  },
+  "memoryStore": {
+    "at": "2026-10-22T15:34:34.994612+00:00",
+    "id": "mem_store_01m5j3zte9frmaagxx1hpp1qcv",
+    "lastAction": "created",
+    "spec": {
+      "description": "HVAC concierge demo memory store",
+      "displayName": "hvac-concierge-memory"
+    },
+    "specHash": "fa151c52bfc7e2b7"
+  },
+  "messagingServiceSid": "MG2646e059655df8c67550a2db042333c3",
+  "orchestratorConfig": {
+    "at": "2026-10-22T15:34:40.571583+00:00",
+    "id": "conv_configuration_01m5j3zzzxekhrrm820ncs7tss",
+    "lastAction": "created",
+    "spec": {
+      "channelSettings": {
+        "SMS": {
+          "captureRules": [
+            {
+              "from": "*",
+              "to": "+12346353817"
+            },
+            {
+              "from": "+12346353817",
+              "to": "*"
+            }
+          ],
+          "statusTimeouts": {
+            "closed": 5
+          }
+        },
+        "VOICE": {
+          "captureRules": []
+        }
+      },
+      "conversationGroupingType": "GROUP_BY_PROFILE",
+      "description": "HVAC concierge demo: voice via ConversationRelay, SMS via capture rules.",
+      "displayName": "hvac-concierge",
+      "intelligenceConfigurationIds": [
+        "intelligence_configuration_01m5j3zzkyf2ntpz934v8edse1"
+      ],
+      "memoryExtractionEnabled": true,
+      "memoryStoreId": "mem_store_01m5j3zte9frmaagxx1hpp1qcv",
+      "statusCallbacks": [
+        {
+          "method": "POST",
+          "url": "https://hvac-concierge.twilio.dtolb.com/webhook"
+        }
+      ]
+    },
+    "specHash": "b74855fcc7001b4b"
+  },
+  "phoneNumber": {
+    "at": "2026-10-22T15:34:41.187614+00:00",
+    "id": "PN7aa9ccdf29c8e0d6d8728db52a00d7e2",
+    "lastAction": "updated",
+    "spec": {
+      "StatusCallback": "https://hvac-concierge.twilio.dtolb.com/twilio/call-events/status",
+      "StatusCallbackMethod": "POST",
+      "VoiceMethod": "POST",
+      "VoiceUrl": "https://hvac-concierge.twilio.dtolb.com/twiml"
+    },
+    "specHash": "413aff30bc46e7f8"
+  },
+  "publicHost": "hvac-concierge.twilio.dtolb.com",
+  "traitGroup": {
+    "at": "2026-10-22T15:34:37.341959+00:00",
+    "id": "HvacService",
+    "lastAction": "created",
+    "spec": {
+      "description": "HVAC service request details captured by the concierge.",
+      "displayName": "HvacService",
+      "traits": {
+        "addressConfirmed": {
+          "dataType": "BOOLEAN",
+          "description": "True once the caller confirmed the read-back address."
+        },
+        "lastCallSid": {
+          "dataType": "STRING",
+          "description": "Call SID of the most recent call."
+        },
+        "purchaseInterest": {
+          "dataType": "STRING",
+          "description": "Perceived buying interest: HIGH, MEDIUM or LOW."
+        },
+        "purchaseInterestRationale": {
+          "dataType": "STRING",
+          "description": "Why the interest level was chosen."
+        },
+        "reasonForCalling": {
+          "dataType": "STRING",
+          "description": "Why the customer called, in one sentence."
+        },
+        "serviceAddress": {
+          "dataType": "STRING",
+          "description": "Full service address as confirmed with the caller."
+        },
+        "serviceType": {
+          "dataType": "STRING",
+          "description": "REPLACEMENT, REPAIR, MAINTENANCE, INSTALLATION, QUOTE or OTHER."
+        },
+        "urgency": {
+          "dataType": "STRING",
+          "description": "EMERGENCY, SOON or FLEXIBLE."
+        }
+      }
+    },
+    "specHash": "d666705fbe2dddee"
+  }
+}

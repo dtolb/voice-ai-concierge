@@ -1,0 +1,13 @@
+- generic [ref=e4]:
+  - banner [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: Twilio · ConversationRelay · Conversation Intelligence · Memory
+      - heading "Summit Heating & Air concierge" [level=1] [ref=e8]
+  - generic [ref=e9]:
+    - tablist "Concierge views" [ref=e10]:
+      - tab "Live" [selected] [ref=e11] [cursor=pointer]
+      - tab "Call history" [ref=e13] [cursor=pointer]
+      - tab "Prompt" [ref=e15] [cursor=pointer]
+      - tab "TwiML builder" [ref=e17] [cursor=pointer]
+    - tabpanel "Live" [ref=e19]:
+      - paragraph [ref=e21]: No calls yet. Call the number above and ask about replacing your furnace or air conditioner.

@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+@import '@gtmi/strix-react/tokens.css';
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+}

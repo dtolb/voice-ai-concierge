@@ -1,0 +1,20 @@
+services:
+  hvac-concierge:
+    build:
+      context: .
+      secrets: [corp_ca]
+    container_name: hvac-concierge
+    restart: unless-stopped
+    env_file: .env
+    labels:
+      - traefik.enable=true
+      - app=hvac-concierge
+    networks: [edge]
+    volumes:
+      - ./data:/app/data
+networks:
+  edge:
+    external: true
+secrets:
+  corp_ca:
+    file: ${CORP_CA_PATH:-~/.config/zscaler-root.crt}

@@ -1,0 +1,197 @@
+- generic [ref=e4]:
+  - banner [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: Twilio · ConversationRelay · Conversation Intelligence · Memory
+      - heading "Summit Heating & Air concierge" [level=1] [ref=e8]
+    - generic [ref=e22]:
+      - generic [ref=e23]: Call or text (234) 635-3817
+      - generic [ref=e25]: gpt-6-luna
+  - generic [ref=e9]:
+    - tablist "Concierge views" [ref=e10]:
+      - tab "Live" [ref=e11] [cursor=pointer]
+      - tab "Call history" [ref=e13] [cursor=pointer]
+      - tab "Prompt" [ref=e15] [cursor=pointer]
+      - tab "TwiML builder" [active] [selected] [ref=e17] [cursor=pointer]
+    - tabpanel "TwiML builder" [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - generic [ref=e32]:
+                - generic [ref=e33]: Preset
+                - combobox "Preset" [ref=e35]:
+                  - option "Default (ElevenLabs + Deepgram) (active)" [selected]
+              - generic [ref=e36]:
+                - generic [ref=e37]: Name
+                - textbox "Name" [ref=e38]:
+                  - /placeholder: ""
+                  - text: Default (ElevenLabs + Deepgram)
+            - generic [ref=e39]:
+              - button "Save and use for next call" [ref=e40]
+              - button "Save" [ref=e41]
+              - button "Duplicate" [ref=e42]
+          - generic [ref=e44]:
+            - heading "Greeting" [level=3] [ref=e46]
+            - generic [ref=e49]:
+              - generic [ref=e50]:
+                - generic [ref=e51]: Welcome greeting
+                - textbox "Welcome greeting" [ref=e52]:
+                  - /placeholder: ""
+                  - text: Thanks for calling Summit Heating and Air. This is Sky, the virtual assistant. How can I help you today?
+              - generic [ref=e53]:
+                - generic [ref=e54]: Greeting interruptible by
+                - combobox "Greeting interruptible by" [ref=e56]:
+                  - option "Default"
+                  - option "any" [selected]
+                  - option "speech"
+                  - option "dtmf"
+                  - option "none"
+          - generic [ref=e58]:
+            - heading "Language" [level=3] [ref=e60]
+            - generic [ref=e63]:
+              - generic [ref=e64]:
+                - generic [ref=e65]: Language
+                - textbox "Language" [ref=e66]:
+                  - /placeholder: en-US
+                  - text: en-US
+              - generic [ref=e67]:
+                - generic [ref=e68]: TTS language (override)
+                - textbox "TTS language (override)" [ref=e69]:
+                  - /placeholder: en-US
+              - generic [ref=e70]:
+                - generic [ref=e71]: STT language (override)
+                - textbox "STT language (override)" [ref=e72]:
+                  - /placeholder: en-US or multi
+                - generic [ref=e73]: "\"multi\" needs Deepgram STT and ElevenLabs TTS."
+          - generic [ref=e75]:
+            - heading "Text-to-speech" [level=3] [ref=e77]
+            - generic [ref=e80]:
+              - generic [ref=e81]:
+                - generic [ref=e82]: TTS provider
+                - combobox "TTS provider" [ref=e84]:
+                  - option "Default"
+                  - option "ElevenLabs" [selected]
+                  - option "Google"
+                  - option "Amazon"
+              - generic [ref=e85]:
+                - generic [ref=e86]: Voice
+                - textbox "Voice" [ref=e87]:
+                  - /placeholder: UgBBYS2sOqTuMpoF3BR0
+                  - text: UgBBYS2sOqTuMpoF3BR0
+                - generic [ref=e88]: ElevenLabs voice id, Google e.g. en-US-Journey-O, Amazon e.g. Joanna-Neural.
+              - generic [ref=e89]:
+                - generic [ref=e90]: ElevenLabs text normalization
+                - combobox "ElevenLabs text normalization" [ref=e92]:
+                  - option "Default" [selected]
+                  - option "off"
+                  - option "on"
+                  - option "auto"
+          - generic [ref=e94]:
+            - heading "Speech-to-text" [level=3] [ref=e96]
+            - generic [ref=e99]:
+              - generic [ref=e100]:
+                - generic [ref=e101]: STT provider
+                - combobox "STT provider" [ref=e103]:
+                  - option "Default"
+                  - option "Deepgram" [selected]
+                  - option "Google"
+              - generic [ref=e104]:
+                - generic [ref=e105]: Speech model
+                - textbox "Speech model" [ref=e106]:
+                  - /placeholder: nova-3-general
+                  - text: nova-3-general
+                - generic [ref=e107]: "Deepgram: nova-3-general, nova-2-general, flux. Google: telephony, long, short."
+              - generic [ref=e108]:
+                - generic [ref=e109]: Deepgram smart format
+                - combobox "Deepgram smart format" [ref=e111]:
+                  - option "Default" [selected]
+                  - option "On"
+                  - option "Off"
+              - generic [ref=e112]:
+                - generic [ref=e113]: Recognition hints
+                - textbox "Recognition hints" [ref=e114]:
+                  - /placeholder: ""
+                  - text: HVAC, furnace, heat pump, condenser, Trane, Carrier, Lennox, Rheem, Goodman, SEER, BTU, thermostat
+                - generic [ref=e115]: Comma-separated words and phrases.
+              - generic [ref=e116]:
+                - generic [ref=e117]: Speech timeout (ms)
+                - textbox "Speech timeout (ms)" [ref=e118]:
+                  - /placeholder: auto
+              - generic [ref=e119]:
+                - generic [ref=e120]: End-of-turn threshold
+                - textbox "End-of-turn threshold" [ref=e121]:
+                  - /placeholder: "0.8"
+                - generic [ref=e122]: 0.5–0.9, Deepgram flux only.
+              - generic [ref=e123]:
+                - generic [ref=e124]: Partial prompts
+                - combobox "Partial prompts" [ref=e126]:
+                  - option "Default" [selected]
+                  - option "On"
+                  - option "Off"
+                - generic [ref=e127]: Deepgram flux only.
+          - generic [ref=e129]:
+            - heading "Interruptions" [level=3] [ref=e131]
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e136]: Interruptible by
+                - combobox "Interruptible by" [ref=e138]:
+                  - option "Default"
+                  - option "any" [selected]
+                  - option "speech"
+                  - option "dtmf"
+                  - option "none"
+              - generic [ref=e139]:
+                - generic [ref=e140]: Interrupt sensitivity
+                - combobox "Interrupt sensitivity" [ref=e142]:
+                  - option "Default"
+                  - option "high" [selected]
+                  - option "medium"
+                  - option "low"
+              - generic [ref=e143]:
+                - generic [ref=e144]: Report input during agent speech
+                - combobox "Report input during agent speech" [ref=e146]:
+                  - option "Default" [selected]
+                  - option "none"
+                  - option "any"
+                  - option "speech"
+                  - option "dtmf"
+              - generic [ref=e147]:
+                - generic [ref=e148]: Ignore backchannel ("uh-huh")
+                - combobox "Ignore backchannel (\"uh-huh\")" [ref=e150]:
+                  - option "Default" [selected]
+                  - option "On"
+                  - option "Off"
+              - generic [ref=e151]:
+                - generic [ref=e152]: Preemptible
+                - combobox "Preemptible" [ref=e154]:
+                  - option "Default" [selected]
+                  - option "On"
+                  - option "Off"
+              - generic [ref=e155]:
+                - generic [ref=e156]: DTMF detection
+                - combobox "DTMF detection" [ref=e158]:
+                  - option "Default" [selected]
+                  - option "On"
+                  - option "Off"
+          - generic [ref=e160]:
+            - heading "Advanced" [level=3] [ref=e162]
+            - generic [ref=e165]:
+              - generic [ref=e166]:
+                - generic [ref=e167]: Events
+                - textbox "Events" [ref=e168]:
+                  - /placeholder: speaker-events tokens-played
+              - generic [ref=e169]:
+                - generic [ref=e170]: Debug
+                - textbox "Debug" [ref=e171]:
+                  - /placeholder: debugging
+              - generic [ref=e172]:
+                - generic [ref=e173]: Intelligence service (classic)
+                - textbox "Intelligence service (classic)" [ref=e174]:
+                  - /placeholder: ""
+                - generic [ref=e175]: "Leave blank: Conversation Intelligence runs through the Orchestrator configuration."
+        - generic [ref=e177]:
+          - generic [ref=e178]:
+            - heading "TwiML preview" [level=3] [ref=e179]
+            - button "Copy" [ref=e180]
+          - paragraph [ref=e181]: What the next inbound call receives. url, action and conversationConfiguration come from the server.
+          - generic [ref=e182]: <?xml version="1.0" encoding="UTF-8"?> <Response> <Connect action="https://hvac-concierge.twilio.dtolb.com/conversation-relay-callback"> <ConversationRelay url="wss://hvac-concierge.twilio.dtolb.com/ws" welcomeGreeting="Thanks for calling Summit Heating and Air. This is Sky, the virtual assistant. How can I help you today?" welcomeGreetingInterruptible="any" language="en-US" ttsProvider="ElevenLabs" voice="UgBBYS2sOqTuMpoF3BR0" transcriptionProvider="Deepgram" speechModel="nova-3-general" interruptible="any" interruptSensitivity="high" hints="HVAC, furnace, heat pump, condenser, Trane, Carrier, Lennox, Rheem, Goodman, SEER, BTU, thermostat" conversationConfiguration="conv_configuration_01m5j3zzzxekhrrm820ncs7tss" /> </Connect> </Response>

@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inbound voice AI concierge on Twilio: architecture and call flows</title>
+<link rel="icon" href="data:image/x-icon;base64,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k//rv6z/8tXI//ns5v/9+Pb//v38//z18v/z18z/6LGa/9uHZP/Wdk7/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/tRxR/rUcUe01HJIb9RySJjUckjM1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RySP/biGX/5q2V//fk2//9+Pb///79//349f/24dn/7cSy/+Kegv/ahmL/1nZN/9RxR//UcUf/1HFH/9RxR//UcUf/1HJI/9Z4UP/cimf/5KSJ/+/Lu//45t///fr4///+/v/89fL/9NzS/+OjiP/Zg1//1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UckjM1HFHmdRySLrUcUfc1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HJI/9Z5Uf/kpYr/89fM//z18v/+/f3//fj1//Tc0v/ospv/3Ipo/9d6U//VdEv/1HJI/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RySf/VdUz/13xV/92Qb//quaX/9+Tb//36+P/+/fz/+/Ht//DNvv/hnYD/1XVM/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUfd1HJIutRxR9LUcUfo1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1nZO/92Pbv/swa//+vDs//78+//89fP/9uDX/+exmv/ekXH/2YFc/92Qb//gmnz/4Zx//92Pbv/Yf1n/1XNJ/9VzSv/Zgl3/3pJx/+Kegf/gmHr/3I1r/9mBXP/flnf/6rml//jm3//9+Pb//vv5//jp4//quKP/24dj/9V0S//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUfp1HJI0tRxR+XUcUfy1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/2H1W/+Wqkf/02s////79///+/f/35t7/7MCt/9uIZf/ZgVz/3pJy/+q6pv/wzr//8dHE/+q6pv/gl3n/13tU/9h/Wf/inoH/7MCu//LTxv/vy7z/6LSe/9yLaf/ZgVz/3ZBv/+/Lu//57Ob///79//77+v/x0sT/4p+D/9d6Uv/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUfy1HFH5dRxR/DUcUf41HFH/9RxR//UcUf/1HFH/9RxR//VdEv/24dk/+7FtP/56uT///79//359//wzL7/4Jp8/9d6Uv/ek3P/7MCt//jp4v/89fL//PXy//rt5//swK3/4Jd4/+Kfg//uyLj/+/Ds//z28//89PH/9+Xd/+i0nv/cjWv/13xV/+Skif/y1cn//vz7///+/f/349v/6rqm/9mCXf/Uckn/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf41HFH8NRxR/fUcUf71HFH/9RxR//UcUf/1HFH/9RxR//XelP/35Z3//PZzv/89PH//vv5//nq5P/ptqD/2YJe/9V2Tf/ioYX/89bK//339P////////7+//78+//y08b/5qyU/+m1oP/029D///79/////////v7//PTw/+/Lu//gmHn/1XVM/9yKZ//sv6z/+/Ht//78+//67+v/8c/B/92Na//Wdk7/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf71HFH99RxR/zUcUf+1HFH/9RxR//UcUf/1HFH/9RxR//ZgVz/5KSJ//jm3//++/r//ff1//PYzP/joob/1XRL/9V1TP/kpoz/9d7U//349v/////////////+/f/z2M3/6bWf/+u/rP/139b///7+/////////////PXz//HSxf/hnYD/1HJJ/9Z4UP/mq5P/9uPb//35+P/9+PX/9d/W/+CafP/XfFX/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf+1HFH/NRxR/7UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//biGX/6LGb//ru6P///v7//PTw/+7FtP/flXb/1HFH/9RySP/gmnz/8My9//z08f////////79//359//vy7v/4qCE/+WpkP/y08b//vz7///+/v///v3/+/Ds/+zArf/eknH/1HFH/9RySP/inoH/8tPF//z28//+/Pv/+Ojh/+Sli//Zgl3/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/tRxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//djmz/6rqm//vx7f///v7/+/Ds/+q6pv/djWz/1HFH/9RxR//ahmP/5KaL//DNvv/13dP/9d/V//DPwP/lqI//24dk/9yMav/nr5f/8tPG//bg1//029D/7si4/+Kegf/Zgl3/1HFH/9RxR//flnf/7se2//z08P///v3/+ezn/+aulf/ahmP/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//ekXH/7L+s//vy7v///v7/+u/q/+iynP/biWb/1HFH/9RxR//VdU3/2YJe/+Sli//quaT/672q/+OkiP/biGX/1HJJ/9V1TP/cjGr/5aqQ/+y/rP/ptqD/4p+D/9h/Wf/Vc0r/1HFH/9RxR//dkHD/7L+s//vy7v///v7/+u/q/+iznP/biWb/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//ekXH/7MCt//vy7v///v7/+u7p/+iym//biWb/1HFH/9RxR//VdEv/2H9Z/+GdgP/nr5j/6LSe/+Gbff/Zg1//1HJI/9RySf/bh2T/4qGF/+m2oP/mrJT/4Jd4/9d7VP/Vc0n/1HFH/9RxR//dkHD/67+s//vy7v///v7/+u/q/+iznf/biWb/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//djm3/67un//vx7f///v7/+vDs/+q5pP/cjGr/1HFH/9RxR//Zg17/4p+D/+7FtP/y1cn/89fL/+7Gtv/joof/2YNf/9uIZf/lqY//78u8//PYzf/y08b/7MCt/+CYef/Yf1n/1HFH/9RxR//flXX/7cW0//z08P///v3/+u3n/+evl//bh2T/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR/7UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//bimf/6LSd//rv6v///v7/+/Pv/+3Dsv/ek3P/1HFH/9RxR//flnf/7sW0//vx7f///v3//v38//z28//uxrb/4Zt+/+OjiP/wz8D//fn3///+/f/+/Pv/+u3n/+q6pv/dj27/1HFH/9RxR//hm37/8dDC//z18//+/Pv/+Oni/+Snjv/Zg1//1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/tRxR/zUcUf+1HFH/9RxR//UcUf/1HFH/9RxR//Zg1//5KeN//jo4f/+/Pv//Pb0//LUx//in4P/1XNJ/9V1TP/kpYr/9NvR//349f////////7+//79/P/z18v/6LOd/+u8qf/13tX///79/////////v7//PXy//HRw//hnH//1HJI/9Z2Tf/lqI7/9d/W//359//9+ff/9uHY/+Gcf//YfVf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf+1HFH/NRxR/fUcUf71HFH/9RxR//UcUf/1HFH/9RxR//XfFX/4Jh6//Tc0v/89vP//vr5//jn4P/ospv/2H9Z/9V2Tf/joof/9NnO//349f////////////79/f/y1cj/56+X/+q4o//13dL//////////////////PXy//DNvv/gmnz/1XRL/9qGYv/qu6b/+u/q//78+//78e3/8tPF/92Qb//Wd0//1HFH/9RxR//UcUf/1HFH/9RxR//UcUf71HFH99RxR/DUcUf41HFH/9RxR//UcUf/1HFH/9RxR//VdUz/3Ipn/+/Kuv/67ef///79//339f/vybj/35R1/9Z4Uf/gl3j/7sa1//ns5//9+PX//fj1//vx7f/uxbT/4Z2A/+Sliv/wzb7//PTx//349v/99/T/+Oni/+q6pv/dkG//13pT/+Kegf/x0cP//vv5///+/f/35t//7L+s/9qEX//Vc0n/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf41HFH8NRxR+XUcUfy1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/2H5Y/+ewmP/13tT////////+/f/24dn/6rml/9qEX//Zgl7/4Jp8/+7Gtf/02s//9d3T/+7FtP/in4L/2H9Z/9mCXv/kpYv/8My9//Xe1f/z18v/7MCt/96Scv/ZgVz/3Ipo/+3Esv/46OH///79//79/P/y1cn/46SJ/9d6U//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUfy1HFH5dRySNLUcUfp1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1ndP/96UdP/uxrX//PTw//79/P/78+//9NvQ/+WpkP/djWv/2YJe/+CXeP/jo4j/5KaL/9+Wd//Zg17/1XRL/9V1Tf/ahmP/4Jp8/+Snjf/ioYX/3pNz/9mBXP/ekXH/6LKb//bh2f/89vT//vv6//ru6P/rvar/3Ito/9V1TP/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUfo1HFH0tRySLrUcUfd1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1XNJ/9d8Vf/lq5L/9d7U//339P/+/fz//PXy//LUx//lqZD/2oRf/9Z4Uf/Vdk3/1XVM/9RxR//UcUf/1HFH/9RxR//UcUf/1HJI/9V1TP/Vdk3/13pT/9uJZv/nsZr/9NzS//349v/+/f3//PTx//LUx//joob/1ndP/9RySP/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUfc1HJIutRxR5nUckjM1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RySf/djWv/6LWf//jo4f/++vn//v38//z18v/02s//6rml/9+Udf/Yf1n/1XNJ/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9V0S//Zgl7/4Jp8/+zBrv/24Nf//fj1///+/f/9+PX/9uLa/+Wrkv/bh2T/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UckjM1HJImNRySG/UcUe01HFH+tRxR/7UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//XfFX/3pJy/+zCsP/349v//vr5//79/P/78+//9uHZ/+/JuP/ospv/4p+D/96Tc//cjGr/24lm/9uJZv/djWz/35V2/+Oihv/ptqD/8M2+//fm3//89fP//v39//349v/13tT/6rml/9yMav/WeFH/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/tRxR/rUcUe01HJIb9RxSETUcUeY1HFH7tRxR/zUcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1nhR/9+XeP/swrD/+Oni//339P/+/fz//v39//339f/45+D/8tTI/+3Dsv/quaT/6LKb/+iynP/quqb/7sW0//PYzP/56uT//fn3///+/f/+/Pv//PXy//fk2//quqb/3Y9t/9Z2Tv/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/NRxR+7UcUeY1HFIRNV0Sx7UcUd11HFH1NRxSPbUcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HJJ/9Z4Uf/eknL/6bWf//Xe1P/89PD///7+//79/f/++vn//Pb0//vz7//68Oz/+u7p//rv6v/78Oz//PTw//339f/++/n///79///+/f/68Oz/89fM/+atlf/djWv/1nZO/9RySP/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFI9tRxR9TUcUd11XRLHtZ3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/////////fn3//Xe1f/swa//6LKb/+iynP/txbP/9uLa//76+f////////////jn4P/eknL/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH89RxR07UckiQ1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/3pNz//ru6f////////7+//Xd0//hnH//1nhR/9RxR//UcUf/1HFH/9RxR//Xe1T/46SI//fk3P////////////fm3//biWb/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HJIkNRxR8LUcUf/1HFH/9RxR//UcUf/1HFH/9h9Vv/03NL////////+/v/wzb7/2H5Y/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/2oVh//PXzP////////////HQwv/Wd0//1HFH/9RxR//UcUf/1HFH/9RxR//UcUfD1HFH4tRxR//UcUf/1HFH/9RxR//UcUf/5q6V///+/f//////9NrP/9h9Vv/XfFb/6rmk//HPwf/kp43/1XRL/9Z3T//nr5f/8dDC/+iym//Wd0//2oVh//fk3P///////vr5/+KghP/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR+LUcUfz1HFH/9RxR//UcUf/1HFH/9Z5Uv/13tT///////z28//flnf/1HFH/+zArv////////////349v/hnH//5aqQ//78+/////////79/+iym//UcUf/46SI//77+v//////8dHD/9V1TP/UcUf/1HFH/9RxR//UcUf/1HFH89RxR/zUcUf/1HFH/9RxR//UcUf/3ZBv//z28///////8tXJ/9V1TP/Wdk7/9NzS/////////////////+m4o//uxrX/////////////////8M/A/9RxR//Xe1T/9uLa///////67+r/2oVh/9RxR//UcUf/1HFH/9RxR//UcUf81HFH/9RxR//UcUf/1HFH/9RxR//kpoz///7+///////otZ//1HFH/9RxR//rvan///7+///////89vP/4Jl7/+SmjP/++vn///////78+//nr5f/1HFH/9RxR//txbP///////76+f/gmHn/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/+iynP////////7+/+OkiP/UcUf/1HFH/9d7U//nsJn/7sa2/+Kfg//Uckn/1XZN/+SmjP/ux7f/5aqQ/9Z3T//UcUf/1HFH/+iynP////////7+/+OkiP/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/6LOd/////////v3/46OI/9RxR//UcUf/1nZO/+Oih//puKP/3pNz/9RxR//Uckn/4Jl7/+q5pP/hnH//1XRL/9RxR//UcUf/6LKb/////////v7/5KSJ/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//lqI/////////////ospv/1HFH/9RxR//otJ7//vz7///////78e3/3pNz/+Kfg//89vT///////349v/kp43/1HFH/9RxR//swa////////77+v/gmnz/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf81HFH/9RxR//UcUf/1HFH/96Tc//9+PX///////HRw//Vc0n/1nZO//Tb0f/////////////////pt6L/7sW0//////////////////DOv//UcUf/1nhR//Xe1P//////+/Ht/9uHZP/UcUf/1HFH/9RxR//UcUf/1HFH/NRxR/PUcUf/1HFH/9RxR//UcUf/13xV//bi2v///////PTw/92Qb//UcUf/7si4/////////////vv6/+Oih//nsJj///7+////////////6rmk/9RxR//hnH///fn3///////z1sr/1XZN/9RxR//UcUf/1HFH/9RxR//UcUfz1HFH4tRxR//UcUf/1HFH/9RxR//UcUf/6LSe////////////8dHE/9Z4UP/Zg17/7si4//Xd0//otJ7/1nZO/9d7U//rvan/9d7U/+zArv/XfFb/2H5Y//Xd0////////vz7/+SmjP/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR+LUcUfD1HFH/9RxR//UcUf/1HFH/9RxR//ZgVz/9+Pb///////+/fz/7MKw/9Z4UP/UcUf/1nZO/9RxR//UcUf/1HFH/9RxR//Wdk7/1HFH/9h9Vv/wzb7////////////z2Mz/13pT/9RxR//UcUf/1HFH/9RxR//UcUf/1HFHwtRySJDUcUf/1HFH/9RxR//UcUf/1HFH/9RxR//hnH7//PTw///////+/fz/8dHE/92Qb//Vc0n/1HFH/9RxR//UcUf/1HFH/9V1TP/fl3j/9NrP///+/v//////+u7o/96RcP/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UckiQ1HFHTtRxR/PUcUf/1HFH/9RxR//UcUf/1HFH/9RxR//kp47//PTx/////////////PTw//HRxP/ospv/46OI/+OkiP/otZ//8tXJ//z28/////////////ru6f/hnH//1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH89RxR07Vc0kU1HFHxNRxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//hnH7/9+Tc///+/v///////////////////v3///7+//////////////////79/f/13dP/3pNz/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUfE1XNJFAAAAADUcUdl1HFH+9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//ZgVz/6LSe//bj2//9+Pb///7+//////////////7+//z28//13tX/5q6V/9h9Vv/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH+9RxR2YAAAAAAAAAANV0SxHUcUe31HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/13xV/96Tc//lqI//6LOd/+iynP/kpoz/3ZBv/9Z5Uv/UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUe31XRLEQAAAAAAAAAAAAAAANRySDTUcUfa1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH2dRySDQAAAAAAAAAAAAAAAAAAAAAAAAAANVzSUTUcUfa1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9RxR9rVc0lEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANRxRzPUcUe41HFH+9RxR//UcUf/1HFH/9RxR//UcUf/1HFH/9Rx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">
+<style>
+  :root{
+    --field:#ECF1F3;
+    --paper:#FFFFFF;
+    --ink:#14283A;
+    --muted:#5A6B7A;
+    --line:#C6D2D9;
+    --edge:#A8B7C0;
+
+    /* semantic trio: platform, the app you build, the far end */
+    --plat:#2E6FA3;
+    --app:#C42B72;
+    --far:#2E7D5B;
+
+
+    --code:#0E1B27;
+    --codeink:#D8E4EC;
+    --codemuted:#6E879A;
+
+    --display:"Avenir Next","Futura","Century Gothic","Trebuchet MS",sans-serif;
+    --body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+
+    --measure:62rem;
+    --wide:82.5rem;
+    --gutter:clamp(1.125rem,4vw,2.5rem);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--field);color:var(--ink);font-family:var(--body);line-height:1.68;
+    font-size:clamp(1rem,0.55rem + 0.6vw,1.125rem);overflow-wrap:break-word;
+    background-image:
+      repeating-linear-gradient(0deg,transparent 0 79px,rgba(46,111,163,.055) 79px 80px),
+      repeating-linear-gradient(90deg,transparent 0 79px,rgba(46,111,163,.055) 79px 80px);
+  }
+  .wrap{
+    max-width:var(--wide);margin-inline:auto;
+    padding:clamp(2rem,5vw,4rem) var(--gutter) 6rem;
+    display:grid;
+    grid-template-columns:
+      [wide-start] minmax(0,1fr)
+      [prose-start] minmax(0,var(--measure)) [prose-end]
+      minmax(0,1fr) [wide-end];
+  }
+  .wrap > *{grid-column:prose;min-width:0;max-width:100%}
+  .wrap > .wide{grid-column:wide}
+  .wide,pre{overflow-x:auto}
+  a{color:var(--ink)}
+  a:focus-visible{outline:2px solid var(--plat);outline-offset:2px}
+
+  /* masthead */
+  .eyebrow{
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);margin-block-end:.7rem;
+  }
+  h1{
+    font-family:var(--display);font-weight:600;letter-spacing:-.02em;line-height:1.07;
+    font-size:clamp(2.1rem,5vw,3.15rem);margin-block-end:1rem;
+  }
+  .lede{font-size:1.06rem;color:var(--muted);margin-block-end:1.4rem}
+  .lede strong{color:var(--ink);font-weight:600}
+  .facts{display:flex;flex-wrap:wrap;gap:.5rem;margin-block-end:.5rem}
+  .facts > div{
+    background:var(--paper);border:1px solid var(--line);padding:.35rem .7rem;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);display:flex;gap:.45rem;align-items:baseline;
+  }
+  .facts b{color:var(--ink);font-weight:600;font-size:.82rem}
+
+  /* contents */
+  .toc{border-block:1px solid var(--line);padding-block:1.1rem 1.15rem;margin-block:1.8rem 0}
+  .toc .toch{
+    font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin-block-end:.65rem;
+  }
+  .toc ol{list-style:none;padding-left:0;margin-block-end:0}
+  .toc li{margin-block-end:.4rem;display:flex;gap:.7rem;align-items:baseline}
+  .toc li:last-child{margin-block-end:0}
+  .toc .tn{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:var(--muted)}
+  .toc a{text-decoration:none;border-bottom:1px solid var(--line)}
+  .toc a:hover{color:var(--plat);border-color:var(--plat)}
+
+  /* section heads */
+  .sec-head{scroll-margin-block-start:1rem;
+    display:flex;align-items:baseline;gap:.85rem;
+    border-block-start:1px solid var(--line);padding-block-start:1.1rem;
+    margin-block-start:3.4rem;margin-block-end:1.3rem;
+  }
+  .sec-head .num b{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;color:var(--plat);font-weight:600;
+  }
+  .sec-head h2{
+    font-family:var(--display);font-weight:600;font-size:clamp(1.3rem,2.4vw,1.72rem);
+    letter-spacing:-.01em;line-height:1.2;
+  }
+  h3{
+    font-family:var(--display);font-weight:600;font-size:1.1rem;
+    margin-block-start:2rem;margin-block-end:.6rem;
+  }
+  p{margin-block-end:1rem}
+  ul,ol{margin-block-end:1rem;padding-left:1.35rem}
+  li{margin-block-end:.4rem}
+  code{
+    font-family:var(--mono);font-size:.82em;background:var(--paper);
+    border:1px solid var(--line);padding:.05em .3em;border-radius:2px;
+  }
+  .note{color:var(--muted);font-size:.94rem;margin-block-end:1rem}
+  .callout{
+    background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--plat);
+    padding:1.1rem 1.25rem .4rem;margin-block-end:1.3rem;
+  }
+  .callout > .ct{
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin-block-end:.6rem;
+  }
+  .callout.app{border-left-color:var(--app)}
+  .callout.far{border-left-color:var(--far)}
+  .callout ul{margin-block-end:.75rem}
+  .callout li{margin-block-end:.5rem}
+
+  /* topology */
+  .topo{background:var(--paper);border:1px solid var(--line);padding:.4rem .6rem .1rem;overflow-x:auto}
+  .topo svg{display:block;width:100%;min-width:900px;height:auto}
+  .nlabel{font-family:var(--body);font-size:13px;fill:var(--ink)}
+  .nsub{font-family:var(--mono);font-size:9px;letter-spacing:.07em;fill:var(--muted);text-transform:uppercase}
+  .elabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;fill:var(--muted)}
+  .glabel{font-family:var(--mono);font-size:9px;letter-spacing:.16em;fill:var(--muted);text-transform:uppercase}
+  .node{cursor:pointer}
+  .node rect{fill:var(--paper);stroke-width:1.5}
+  .node:hover rect{fill:#F7FAFB}
+  .node:focus{outline:none}
+  .node:focus-visible rect{stroke-width:3}
+  .node.sel rect{stroke-width:3;fill:#F2F7F9}
+  .edge{stroke:var(--edge);stroke-width:1.4;fill:none}
+  .edge.dash{stroke-dasharray:4 3}
+  .gbox{stroke:var(--line);stroke-width:1;stroke-dasharray:4 4;fill:none}
+  .hint{
+    font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);margin-block:.7rem 0;
+  }
+  .node-detail{
+    background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--acc,var(--line));
+    padding:1.1rem 1.25rem;margin-block-start:.9rem;
+  }
+  .node-detail h4{font-family:var(--display);font-size:1rem;font-weight:600;margin-block-end:.5rem}
+  /* Label column is sized to its content and right-aligned, so each label sits against
+     the line it describes. A wide left-aligned column reads as a sentence down the page. */
+  .node-detail dl{
+    display:grid;grid-template-columns:auto 1fr;gap:0 .9rem;
+    font-size:.9rem;margin-block-start:.25rem;
+  }
+  .node-detail dt{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);text-align:right;white-space:nowrap;
+    padding-block:.68rem .5rem;border-block-start:1px solid var(--line);
+  }
+  .node-detail dd{padding-block:.5rem;border-block-start:1px solid var(--line)}
+  .node-detail dt:first-of-type,.node-detail dd:first-of-type{border-block-start:0;padding-block-start:0}
+  .node-detail dt:first-of-type{padding-block-start:.18rem}
+  @media (max-width:560px){
+    .node-detail dl{grid-template-columns:1fr;gap:0}
+    .node-detail dt{text-align:left;padding-block:.7rem .15rem}
+    .node-detail dd{border-block-start:0;padding-block:0 .1rem}
+  }
+
+  /* ladders */
+  .lblock{margin-block-end:2.2rem}
+  .lblock > h3{margin-block-start:1.6rem;margin-block-end:.15rem}
+  .lcap{color:var(--muted);font-size:.92rem;margin-block-end:.5rem}
+  .lanes{
+    display:grid;grid-template-columns:repeat(5,1fr);
+    position:sticky;top:0;z-index:6;
+    background:var(--field);padding:.7rem 0 .65rem;border-bottom:1px solid var(--line);
+  }
+  .lane{display:flex;flex-direction:column;align-items:center;gap:.3rem;text-align:center}
+  .lane .dot{width:9px;height:9px;border-radius:50%}
+  .lane span{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink);
+  }
+  .dot.far{background:var(--far)} .dot.plat{background:var(--plat)}
+  .dot.app{background:var(--app)} .dot.ai{background:#6B7A99} .dot.ci{background:#4D5777}
+  .ladder{position:relative;padding:.5rem 0 .25rem}
+  .rails{position:absolute;inset:0;pointer-events:none;z-index:0}
+  .rails i{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+  .step{position:relative;z-index:1}
+  .row{
+    position:relative;display:flex;align-items:center;width:100%;padding:1rem 0;
+    background:none;border:0;cursor:pointer;font:inherit;color:inherit;text-align:left;
+  }
+  .row::before{
+    content:"";position:absolute;top:50%;transform:translateY(-50%);
+    left:var(--from);right:calc(100% - var(--to));height:1.5px;background:var(--wc,var(--line));
+  }
+  .row::after,.row .head2{
+    content:"";position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+    width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;
+  }
+  .row[data-dir="r"]::after,.row[data-dir="b"]::after{
+    left:calc(var(--to) - 8px);border-left:8px solid var(--wc,var(--line));
+  }
+  .row[data-dir="l"]::after,.row[data-dir="b"] .head2{
+    left:var(--from);border-right:8px solid var(--wc,var(--line));
+  }
+  .wlabel{
+    position:relative;z-index:1;background:var(--paper);border:1px solid var(--line);
+    width:clamp(150px,calc(20vw - 44px),216px);flex:0 0 auto;padding:.45rem .7rem .55rem;
+    margin-left:calc((var(--from) + var(--to)) / 2);transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:stretch;gap:1px;
+    transition:border-color .14s,box-shadow .14s;
+  }
+  .wlabel .hdr{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+  .wlabel .n{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--muted)}
+  .wlabel .t{font-size:.82rem;line-height:1.3}
+  .wlabel .chev{font-size:.55rem;color:var(--muted);transition:transform .16s}
+  .row:hover .wlabel{border-color:var(--wc,var(--ink));box-shadow:0 1px 0 var(--wc,var(--ink))}
+  .row:focus-visible .wlabel{outline:2px solid var(--wc,var(--ink));outline-offset:2px}
+  .step.open .wlabel{border-color:var(--wc,var(--ink));box-shadow:inset 0 0 0 1px var(--wc,var(--ink))}
+  .step.open .wlabel .chev{transform:rotate(90deg)}
+  .step.open .row{--wc:var(--acc)}
+  .detail{
+    background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--acc,var(--line));
+    padding:1rem 1.15rem 1.1rem;margin-block-end:.7rem;
+  }
+  .detail .what{font-size:.94rem;margin-block-end:.5rem}
+  .detail .why{font-size:.88rem;color:var(--muted)}
+  .detail .why b{color:var(--ink);font-weight:600}
+  .detail pre{margin-block-start:.7rem}
+  .bulk{display:flex;gap:.4rem;margin-block-end:.3rem}
+  .bulk button{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--paper);border:1px solid var(--line);color:var(--muted);padding:.2rem .5rem;cursor:pointer;
+  }
+  .bulk button:hover{border-color:var(--ink);color:var(--ink)}
+
+  /* Below 760px the five rails collapse into unreadable slivers, so each hop
+     becomes a full-width panel and the lane colour moves to a left border. */
+  @media (max-width:760px){
+    .lanes{display:none}
+    .rails{display:none}
+    .row{padding:.5rem 0 .2rem}
+    .row::before,.row::after,.row .head2{display:none}
+    .wlabel{
+      width:100%;margin-left:0;transform:none;
+      border-left:3px solid var(--acc,var(--line));
+    }
+    .wlabel .t::after{
+      content:attr(data-hop);display:block;
+      color:var(--muted);font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;
+      text-transform:uppercase;margin-block-start:.25rem;
+    }
+  }
+
+  pre{
+    background:var(--code);color:var(--codeink);font-family:var(--mono);
+    font-size:.74rem;line-height:1.65;padding:.8rem .95rem;margin-block-end:1.1rem;border-radius:2px;
+  }
+  pre b{color:#8FD1A8;font-weight:400}
+  pre i{color:var(--codemuted);font-style:normal}
+  pre u{color:#F0B37E;text-decoration:none}
+
+  table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line)}
+  th{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    text-align:left;color:var(--muted);padding:.65rem .85rem;border-bottom:1px solid var(--line);font-weight:400;
+  }
+  td{padding:.7rem .85rem;border-bottom:1px solid var(--line);font-size:.86rem;vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  .wide table{min-width:720px}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.9rem}
+  .card{
+    background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--acc,var(--plat));
+    padding:1rem 1.1rem 1.1rem;display:flex;flex-direction:column;
+  }
+  .card h4{font-family:var(--display);font-size:1rem;font-weight:600;margin-block-end:.15rem}
+  .card .api{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--muted);
+    display:block;margin-block-end:.6rem;
+  }
+  .card p{font-size:.86rem;margin-block-end:.7rem}
+  .card ul{font-size:.84rem;margin-block-end:.7rem}
+  .card .when{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink);border-top:1px dashed var(--line);padding-block-start:.6rem;margin-top:auto;
+  }
+  .card a{text-decoration:none;border-bottom:1px solid var(--line)}
+  .card a:hover{border-color:var(--acc,var(--plat))}
+
+  .reflinks{display:flex;flex-wrap:wrap;gap:.4rem;margin-block-end:1.2rem}
+  .reflinks a{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;
+    border:1px solid var(--line);color:var(--muted);text-decoration:none;padding:.25rem .5rem;
+    transition:background .14s,color .14s,border-color .14s;
+  }
+  .reflinks a::after{content:"\2197";margin-left:.25rem;opacity:.5}
+  .reflinks a:hover{background:var(--plat);border-color:var(--plat);color:#fff}
+
+  .legend{display:flex;flex-wrap:wrap;gap:.9rem;margin-block:.8rem 1.2rem}
+  .legend > div{
+    display:flex;align-items:center;gap:.4rem;
+    font-family:var(--mono);font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  }
+  .legend i{width:12px;height:12px;border-radius:2px;display:inline-block}
+
+  footer{
+    border-top:1px solid var(--line);margin-block-start:3.5rem;padding-block-start:1.3rem;
+    color:var(--muted);font-size:.84rem;
+  }
+  footer p{margin-block-end:.55rem}
+  .delta{
+    background:var(--paper);border:1px solid var(--line);
+    border-inline-start:3px solid var(--acc,var(--line));padding:1rem 1.15rem .4rem;
+    margin-block-end:1.2rem;
+  }
+  .delta .dt{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--ink);margin-block-end:.55rem;
+  }
+  .delta ul{font-size:.92rem;margin-block-end:.75rem}
+  .delta li{margin-block-end:.45rem}
+
+
+  /* setup steps */
+  .setup{counter-reset:none;display:flex;flex-direction:column;gap:1rem;margin-block:1rem 1.5rem}
+  .sstep{
+    background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--acc,var(--plat));
+    padding:1.1rem 1.25rem .4rem;
+  }
+  .sstep .shead{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;margin-block-end:.5rem}
+  .sstep .sn{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;color:var(--muted)}
+  .sstep h3{font-family:var(--display);font-size:1.08rem;font-weight:600;margin:0}
+  .sstep .where{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-inline-start:auto}
+  .sstep p,.sstep li{font-size:.93rem}
+  .sstep ul{margin-block-end:.8rem}
+  .sstep pre{margin-block:.4rem .9rem}
+  .sstep .gotcha{border-top:1px dashed var(--line);padding-block-start:.6rem;color:var(--muted);font-size:.88rem}
+  .sstep .gotcha b{color:var(--ink)}
+  .sstep .reflinks{margin-block:.2rem .9rem}
+  .deps svg{display:block;width:100%;min-width:760px;height:auto}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none !important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">ConversationRelay &middot; Conversation Orchestrator &middot; Memory &middot; Intelligence</p>
+  <h1>An inbound AI concierge for a home services business</h1>
+  <p class="lede">A caller phones a heating and air conditioning company about replacing a furnace. An AI agent asks for the service address, reads it back, saves the lead to a customer profile, and hangs up after saying goodbye. Sentiment is scored on every utterance and the lead is qualified when the call ends. This page shows how the pieces connect and what happens on one call, hop by hop.</p>
+
+  <div class="facts">
+    <div><b>5</b><span>Twilio products</span></div>
+    <div><b>2</b><span>agent tools</span></div>
+    <div><b>2</b><span>intelligence rules</span></div>
+    <div><b>2</b><span>flows</span></div>
+    <div><b>9</b><span>setup steps</span></div>
+    <div><b>1</b><span>conversation per customer</span></div>
+  </div>
+
+  <nav class="toc" aria-label="Contents">
+    <p class="toch">Contents</p>
+    <ol>
+      <li><span class="tn">01</span><a href="#architecture">System architecture</a></li>
+      <li><span class="tn">02</span><a href="#flows">Call flows</a></li>
+      <li><span class="tn">03</span><a href="#setup">Setting this up in your own Twilio account, voice only</a></li>
+      <li><span class="tn">04</span><a href="#config">How the Twilio objects are configured, and why</a></li>
+      <li><span class="tn">05</span><a href="#choices">Design choices worth teaching</a></li>
+      <li><span class="tn">06</span><a href="#open">Open items</a></li>
+    </ol>
+  </nav>
+  <div class="sec-head" id="architecture"><span class="num"><b>01</b></span><h2>System architecture</h2></div>
+
+  <p>Four groups do the work. The caller is on an ordinary phone. Twilio carries the call and owns three Conversations services: the Orchestrator, which records every utterance into one conversation per customer; Memory, which holds the customer profile; and Intelligence, which runs language operators over the conversation. The application in the middle runs the agent loop on the Twilio Agent Connect SDK, and calls OpenAI for the model. Audio never reaches the application. ConversationRelay converts speech to text and text to speech, and the application only ever exchanges text with it over a WebSocket.</p>
+
+  <div class="wide">
+    <div class="topo">
+      <svg viewBox="0 0 1200 470" role="img" aria-label="Topology of the caller, Twilio voice and Conversations services, the application, and OpenAI">
+        <defs>
+          <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L8,4 L0,8 z" fill="#A8B7C0"></path>
+          </marker>
+        </defs>
+
+        <text class="glabel" x="14" y="46">CALLER</text>
+        <text class="glabel" x="232" y="46">TWILIO</text>
+        <text class="glabel" x="640" y="46">YOUR APPLICATION</text>
+        <text class="glabel" x="996" y="46">MODEL PROVIDER</text>
+        <rect class="gbox" x="14" y="52" width="186" height="140"></rect>
+        <rect class="gbox" x="232" y="52" width="376" height="400"></rect>
+        <rect class="gbox" x="640" y="52" width="324" height="400"></rect>
+        <rect class="gbox" x="996" y="52" width="190" height="140"></rect>
+
+        <path class="edge" d="M184,122 L250,122" marker-start="url(#ar)" marker-end="url(#ar)"></path>
+        <text class="elabel" x="196" y="113">PSTN</text>
+
+        <path class="edge" d="M418,104 L656,104" marker-end="url(#ar)"></path>
+        <text class="elabel" x="440" y="96">WEBHOOK /twiml</text>
+        <path class="edge" d="M418,140 L656,140" marker-start="url(#ar)" marker-end="url(#ar)"></path>
+        <text class="elabel" x="440" y="158">WEBSOCKET: PROMPTS IN, TOKENS OUT</text>
+
+        <path class="edge" d="M334,149 L334,232" marker-end="url(#ar)"></path>
+        <text class="elabel" x="342" y="196">TRANSCRIPT</text>
+
+        <path class="edge" d="M334,286 L334,312" marker-end="url(#ar)"></path>
+        <text class="elabel" x="342" y="303">PROFILE</text>
+        <path class="edge" d="M250,259 L238,259 L238,407 L250,407" marker-end="url(#ar)"></path>
+        <text class="elabel" x="244" y="380" transform="rotate(-90 244 380)">RULES FIRE</text>
+
+        <path class="edge" d="M418,394 L656,394" marker-end="url(#ar)"></path>
+        <text class="elabel" x="440" y="386">WEBHOOK /webhooks/intelligence</text>
+        <path class="edge dash" d="M656,276 L540,276 L540,339 L418,339" marker-end="url(#ar)"></path>
+        <path class="edge dash" d="M540,276 L540,259 L418,259" marker-end="url(#ar)"></path>
+        <text class="elabel" x="440" y="251">CLOSE CONVERSATION</text>
+        <text class="elabel" x="440" y="331">PATCH TRAITS</text>
+
+        <path class="edge" d="M800,149 L800,222" marker-end="url(#ar)"></path>
+        <path class="edge" d="M948,122 L1012,122" marker-start="url(#ar)" marker-end="url(#ar)"></path>
+        <text class="elabel" x="954" y="113">STREAM</text>
+
+        <path class="edge dash" d="M800,286 L800,352" marker-end="url(#ar)"></path>
+        <text class="elabel" x="808" y="324">SERVER-SENT EVENTS</text>
+
+        <g class="node" id="n-caller" role="button" tabindex="0" aria-expanded="false" aria-controls="d-caller">
+          <rect x="30" y="95" width="154" height="54" stroke="#2E7D5B"></rect>
+          <text class="nlabel" x="44" y="118">Caller</text>
+          <text class="nsub" x="44" y="135">ANY PHONE</text>
+        </g>
+        <g class="node" id="n-relay" role="button" tabindex="0" aria-expanded="false" aria-controls="d-relay">
+          <rect x="250" y="95" width="168" height="54" stroke="#2E6FA3"></rect>
+          <text class="nlabel" x="264" y="118">ConversationRelay</text>
+          <text class="nsub" x="264" y="135">STT AND TTS</text>
+        </g>
+        <g class="node" id="n-orch" role="button" tabindex="0" aria-expanded="false" aria-controls="d-orch">
+          <rect x="250" y="232" width="168" height="54" stroke="#2E6FA3"></rect>
+          <text class="nlabel" x="264" y="255">Conv. Orchestrator</text>
+          <text class="nsub" x="264" y="272">ONE CONVERSATION</text>
+        </g>
+        <g class="node" id="n-memory" role="button" tabindex="0" aria-expanded="false" aria-controls="d-memory">
+          <rect x="250" y="312" width="168" height="54" stroke="#2E7D5B"></rect>
+          <text class="nlabel" x="264" y="335">Conv. Memory</text>
+          <text class="nsub" x="264" y="352">CUSTOMER PROFILE</text>
+        </g>
+        <g class="node" id="n-intel" role="button" tabindex="0" aria-expanded="false" aria-controls="d-intel">
+          <rect x="250" y="380" width="168" height="54" stroke="#2E6FA3"></rect>
+          <text class="nlabel" x="264" y="403">Conv. Intelligence</text>
+          <text class="nsub" x="264" y="420">LANGUAGE OPERATORS</text>
+        </g>
+        <g class="node" id="n-tac" role="button" tabindex="0" aria-expanded="false" aria-controls="d-tac">
+          <rect x="656" y="95" width="292" height="54" stroke="#C42B72"></rect>
+          <text class="nlabel" x="670" y="118">Agent server on Twilio Agent Connect</text>
+          <text class="nsub" x="670" y="135">TWIML, WEBSOCKET, TURNS, TOOLS</text>
+        </g>
+        <g class="node" id="n-store" role="button" tabindex="0" aria-expanded="false" aria-controls="d-store">
+          <rect x="656" y="232" width="292" height="54" stroke="#C42B72"></rect>
+          <text class="nlabel" x="670" y="255">Call records, prompts, TwiML presets</text>
+          <text class="nsub" x="670" y="272">ONE JSON FILE</text>
+        </g>
+        <g class="node" id="n-ui" role="button" tabindex="0" aria-expanded="false" aria-controls="d-ui">
+          <rect x="656" y="352" width="292" height="54" stroke="#C42B72"></rect>
+          <text class="nlabel" x="670" y="375">Web console</text>
+          <text class="nsub" x="670" y="392">LIVE, HISTORY, PROMPT, TWIML</text>
+        </g>
+        <g class="node" id="n-llm" role="button" tabindex="0" aria-expanded="false" aria-controls="d-llm">
+          <rect x="1012" y="95" width="158" height="54" stroke="#C42B72"></rect>
+          <text class="nlabel" x="1026" y="118">OpenAI</text>
+          <text class="nsub" x="1026" y="135">AGENTS SDK</text>
+        </g>
+      </svg>
+    </div>
+    <p class="hint">Select any box for what it does, why it is here, what it talks to, and its constraint.</p>
+  </div>
+  <div class="wide" id="nodepanels">
+    <div class="node-detail" id="d-caller" hidden style="--acc:#2E7D5B">
+      <h4>Caller</h4>
+      <dl>
+        <dt>What</dt><dd>A homeowner on any phone, calling or texting one US local number.</dd>
+        <dt>Why here</dt><dd>The caller's phone number is the identifier that ties a call, a text and a returning caller to one customer profile.</dd>
+        <dt>Talks to</dt><dd>The Twilio number over the PSTN, for voice and SMS.</dd>
+        <dt>Constraint</dt><dd>SMS from a US local number needs an approved A2P 10DLC campaign. The demo number sits in a Messaging Service that already has one.</dd>
+      </dl>
+    </div>
+    <div class="node-detail" id="d-relay" hidden style="--acc:#2E6FA3">
+      <h4>ConversationRelay</h4>
+      <dl>
+        <dt>What</dt><dd>The <code>&lt;ConversationRelay&gt;</code> TwiML noun. Twilio transcribes the caller, sends each finished utterance to a WebSocket as a <code>prompt</code> message, and speaks the <code>text</code> tokens the application streams back.</dd>
+        <dt>Why here</dt><dd>It removes audio handling from the application entirely. Speech-to-text, text-to-speech, barge-in detection and endpointing are all Twilio's, and each is a TwiML attribute the demo's TwiML builder can change per call.</dd>
+        <dt>Talks to</dt><dd>The application's <code>/twiml</code> webhook once per call and its <code>/ws</code> WebSocket for the rest of it. With <code>conversationConfiguration</code> set, it also writes the transcript into the Orchestrator.</dd>
+        <dt>Constraint</dt><dd>One session per call. Interrupt messages report what the caller had heard when they barged in, which the application has to use to rewrite its own chat history.</dd>
+      </dl>
+    </div>
+    <div class="node-detail" id="d-orch" hidden style="--acc:#2E6FA3">
+      <h4>Conversation Orchestrator</h4>
+      <dl>
+        <dt>What</dt><dd>A conversation configuration that groups communications by customer profile. Every voice utterance, agent reply and text message lands in one conversation.</dd>
+        <dt>Why here</dt><dd>It is the join between channels and the trigger for Intelligence. Memory resolves the caller to a profile through it, and Intelligence rules fire on its events.</dd>
+        <dt>Talks to</dt><dd>ConversationRelay for voice, capture rules on the number for SMS, Memory for the profile, Intelligence for rule execution, and the application's <code>/webhook</code> for conversation events.</dd>
+        <dt>Constraint</dt><dd>A conversation stays open until it is closed or times out. End-of-call rules do not fire until it closes.</dd>
+      </dl>
+    </div>
+    <div class="node-detail" id="d-memory" hidden style="--acc:#2E7D5B">
+      <h4>Conversation Memory</h4>
+      <dl>
+        <dt>What</dt><dd>A memory store with the default <code>Contact</code> trait group and a custom <code>HvacService</code> group: reason for calling, service type, service address, address confirmed, purchase interest and its rationale, urgency, last call.</dd>
+        <dt>Why here</dt><dd>The agent reads the profile at the start of a call, so a returning caller is not asked for their address twice, and the business reads it afterwards as the lead record.</dd>
+        <dt>Talks to</dt><dd>The Orchestrator, which resolves the caller's phone number to a profile; the application, which reads and patches traits; Intelligence, which reads the profile as operator context.</dd>
+        <dt>Constraint</dt><dd>A trait can only be written if it is declared in the store's trait group schema first.</dd>
+      </dl>
+    </div>
+    <div class="node-detail" id="d-intel" hidden style="--acc:#2E6FA3">
+      <h4>Conversation Intelligence</h4>
+      <dl>
+        <dt>What</dt><dd>An intelligence configuration with two rules. Rule one runs Twilio's Sentiment operator on every communication. Rule two runs Summary, Sentiment and a custom HVAC Lead Qualification operator when the conversation closes.</dd>
+        <dt>Why here</dt><dd>It gives the business an independent read of the call. The lead operator judges purchase interest from the whole transcript, which the agent is never asked to do mid-call.</dd>
+        <dt>Talks to</dt><dd>The Orchestrator for triggers and transcript, Memory for context, and the application's <code>/webhooks/intelligence</code> for results.</dd>
+        <dt>Constraint</dt><dd>Per-utterance results arrive a few seconds after the utterance. End-of-call results arrive a few seconds after the conversation closes, not after the caller hangs up.</dd>
+      </dl>
+    </div>
+    <div class="node-detail" id="d-tac" hidden style="--acc:#C42B72">
+      <h4>Agent server on Twilio Agent Connect</h4>
+      <dl>
+        <dt>What</dt><dd>A Node service built on the <code>twilio-agent-connect</code> SDK. The SDK answers the webhooks, validates Twilio signatures, runs the ConversationRelay WebSocket, and looks up the conversation and profile for each call. The application adds the agent turn, two tools, and the Intelligence webhook.</dd>
+        <dt>Why here</dt><dd>It is the only part you build. Everything about carrying the call is the platform's; everything about what the agent says and remembers is here.</dd>
+        <dt>Talks to</dt><dd>ConversationRelay, OpenAI, Memory and the Orchestrator through REST, and the web console.</dd>
+        <dt>Constraint</dt><dd>Needs a public HTTPS and WSS hostname that Twilio can reach.</dd>
+      </dl>
+    </div>
+    <div class="node-detail" id="d-store" hidden style="--acc:#C42B72">
+      <h4>Call records, prompts and TwiML presets</h4>
+      <dl>
+        <dt>What</dt><dd>One JSON file: every call's transcript, tool calls, latency and Intelligence results; versioned system prompts; named sets of ConversationRelay attributes.</dd>
+        <dt>Why here</dt><dd>It lets the demo change the prompt or the voice between calls and compare the results, without redeploying.</dd>
+        <dt>Talks to</dt><dd>The agent server only.</dd>
+        <dt>Constraint</dt><dd>A demo store for a handful of users, not a database.</dd>
+      </dl>
+    </div>
+    <div class="node-detail" id="d-ui" hidden style="--acc:#C42B72">
+      <h4>Web console</h4>
+      <dl>
+        <dt>What</dt><dd>A single-page app with four tabs: a live view of the current call, call history, a prompt editor and a TwiML builder with a live preview.</dd>
+        <dt>Why here</dt><dd>It makes each product's contribution visible while a call is in progress: the transcript, the sentiment, the profile filling in, and the post-call results.</dd>
+        <dt>Talks to</dt><dd>The agent server's JSON API and its server-sent event stream. Each call links out to Voice Insights in the Twilio Console.</dd>
+        <dt>Constraint</dt><dd>Shows latency measured by the application only. Speech-to-text, text-to-speech and network time per turn are in Voice Insights.</dd>
+      </dl>
+    </div>
+    <div class="node-detail" id="d-llm" hidden style="--acc:#C42B72">
+      <h4>OpenAI, through the Agents SDK</h4>
+      <dl>
+        <dt>What</dt><dd>The model, called through the OpenAI Agents SDK with streaming and two tools: <code>save_customer_details</code> and <code>end_call</code>.</dd>
+        <dt>Why here</dt><dd>The customer's own LLM. Agent Connect is model-agnostic; this demo uses OpenAI because that is what the customer runs.</dd>
+        <dt>Talks to</dt><dd>The agent server only.</dd>
+        <dt>Constraint</dt><dd>Time to first token is most of the caller's perceived wait. Tool calls add a second model round trip to the turn they happen in.</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="sec-head" id="flows"><span class="num"><b>02</b></span><h2>Call flows</h2></div>
+
+  <p>Two flows cover the demo. The first is the scenario under test, an inbound call from a customer who wants a furnace replaced. The second is a text to the same number, which lands in the same conversation and profile. Each hop names who sends what to whom.</p>
+
+  <div class="legend">
+    <div><i style="background:#2E7D5B"></i>Caller</div>
+    <div><i style="background:#2E6FA3"></i>Twilio</div>
+    <div><i style="background:#C42B72"></i>Your application and its model</div>
+  </div>
+
+  <p class="hint">Select any hop to expand it. Hops are numbered per flow.</p>
+
+  <div class="wide">
+  <div class="lblock">
+    <h3>Flow A. An inbound call, from greeting to post-call intelligence</h3>
+    <p class="lcap">The scenario under test: the caller wants a replacement, the agent needs the service address, confirms it, saves the lead and hangs up.</p>
+    <div class="bulk"><button data-bulk="open" data-flow="a">Expand all</button><button data-bulk="close" data-flow="a">Collapse</button></div>
+    <div class="lanes">
+      <div class="lane"><span class="dot far"></span><span>Caller</span></div>
+      <div class="lane"><span class="dot plat"></span><span>ConversationRelay</span></div>
+      <div class="lane"><span class="dot app"></span><span>Agent server</span></div>
+      <div class="lane"><span class="dot ai"></span><span>OpenAI</span></div>
+      <div class="lane"><span class="dot ci"></span><span>Orchestrator, Memory, Intelligence</span></div>
+    </div>
+    <div class="ladder" data-flow="a">
+      <div class="rails"><i style="left:10%"></i><i style="left:30%"></i><i style="left:50%"></i><i style="left:70%"></i><i style="left:90%"></i></div>
+      <div class="step" style="--acc:#2E7D5B">
+        <button class="row" style="--from:10%;--to:30%" data-dir="r" aria-expanded="false" aria-controls="h-a1">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A01</span><span class="chev">&#9656;</span></span><span class="t">Caller dials the number</span></span>
+        </button>
+        <div class="detail" id="h-a1" hidden>
+          <p class="what">The call reaches the Twilio number, whose voice URL is the agent server's <code>/twiml</code> endpoint. Twilio posts the call's details there, signed with <code>X-Twilio-Signature</code>.</p>
+          <p class="why">The agent server validates the signature before it answers. A request without a valid signature gets a 403.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#C42B72">
+        <button class="row" style="--from:30%;--to:50%" data-dir="l" aria-expanded="false" aria-controls="h-a2">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A02</span><span class="chev">&#9656;</span></span><span class="t">Server answers with &lt;ConversationRelay&gt;</span></span>
+        </button>
+        <div class="detail" id="h-a2" hidden>
+          <p class="what">The SDK calls the application's inbound customizer, which creates a call record and returns the active TwiML preset: voice, speech-to-text provider and model, greeting, interruption settings and hints. The SDK adds the WebSocket URL, the <code>&lt;Connect action&gt;</code> URL and <code>conversationConfiguration</code>, and returns the TwiML.</p>
+          <p class="why"><b>conversationConfiguration is what puts the call into the Orchestrator.</b> No voice capture rule is needed, and adding one would start a second transcription.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#2E6FA3">
+        <button class="row" style="--from:30%;--to:90%" data-dir="r" aria-expanded="false" aria-controls="h-a3">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A03</span><span class="chev">&#9656;</span></span><span class="t">Conversation and participants created</span></span>
+        </button>
+        <div class="detail" id="h-a3" hidden>
+          <p class="what">ConversationRelay creates or resolves a conversation under the configuration at call connect, with two participants: the caller as <code>CUSTOMER</code> and the Twilio number as <code>AGENT</code>. Memory then resolves the customer's phone number against the <code>phone</code> trait, finding an existing profile or creating one.</p>
+          <p class="why"><b>Profile resolution is asynchronous and best effort.</b> The participant exists before its <code>profileId</code> does, and a failed lookup leaves it null without failing the call. Only a participant explicitly typed <code>CUSTOMER</code> gets a new profile created, which ConversationRelay does for the caller.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#2E6FA3">
+        <button class="row" style="--from:30%;--to:50%" data-dir="r" aria-expanded="false" aria-controls="h-a4">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A04</span><span class="chev">&#9656;</span></span><span class="t">WebSocket opens, greeting plays</span></span>
+        </button>
+        <div class="detail" id="h-a4" hidden>
+          <p class="what">ConversationRelay opens the WebSocket and sends <code>setup</code> with the CallSid. It speaks the welcome greeting from the TwiML while the SDK polls the Orchestrator for the conversation and its profile in the background.</p>
+          <p class="why">The lookup overlaps the greeting, so the first turn does not wait for it.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#2E7D5B">
+        <button class="row" style="--from:10%;--to:50%" data-dir="r" aria-expanded="false" aria-controls="h-a5">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A05</span><span class="chev">&#9656;</span></span><span class="t">Caller describes the problem</span></span>
+        </button>
+        <div class="detail" id="h-a5" hidden>
+          <p class="what">ConversationRelay transcribes the utterance and sends a <code>prompt</code> message. The SDK fetches the caller's memory once for the call and hands the text, the memory and the session to the application's turn handler.</p>
+          <p class="why">Memory is fetched once per call rather than on every turn, which keeps a network round trip off the hot path.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#C42B72">
+        <button class="row" style="--from:50%;--to:70%" data-dir="r" aria-expanded="false" aria-controls="h-a6">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A06</span><span class="chev">&#9656;</span></span><span class="t">Agent turn streams from OpenAI</span></span>
+        </button>
+        <div class="detail" id="h-a6" hidden>
+          <p class="what">The application composes the active system prompt with the caller's profile and recent summaries, appends the utterance to the conversation's chat history, and runs the agent with streaming on.</p>
+          <p class="why"><b>Time to first token is the caller's wait.</b> The application records it on every turn and shows it in call history.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#C42B72">
+        <button class="row" style="--from:30%;--to:50%" data-dir="l" aria-expanded="false" aria-controls="h-a7">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A07</span><span class="chev">&#9656;</span></span><span class="t">Tokens stream back to the caller</span></span>
+        </button>
+        <div class="detail" id="h-a7" hidden>
+          <p class="what">Each token goes to ConversationRelay as a <code>text</code> message as soon as it arrives, after a filter that spells five-digit numbers digit by digit so a ZIP code is not read as a quantity. ConversationRelay starts speaking before the reply is complete.</p>
+          <p class="why">The filter holds back a trailing run of digits until it is complete, because a ZIP code can arrive split across tokens.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#2E6FA3">
+        <button class="row" style="--from:30%;--to:90%" data-dir="r" aria-expanded="false" aria-controls="h-a8">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A08</span><span class="chev">&#9656;</span></span><span class="t">Every utterance is recorded and scored</span></span>
+        </button>
+        <div class="detail" id="h-a8" hidden>
+          <p class="what">Each caller turn and each agent reply becomes a communication in the conversation. Intelligence rule one runs Sentiment on each and posts the result to <code>/webhooks/intelligence</code>, where the application matches it to the call by CallSid and streams it to the live view.</p>
+          <p class="why">On a measured demo call, 23 communications alternated caller and agent, one per whole turn, not one per streamed token. Results land one to four seconds after the turn.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#C42B72">
+        <button class="row" style="--from:50%;--to:90%" data-dir="r" aria-expanded="false" aria-controls="h-a9">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A09</span><span class="chev">&#9656;</span></span><span class="t">Agent saves the confirmed address</span></span>
+        </button>
+        <div class="detail" id="h-a9" hidden>
+          <p class="what">The prompt makes the agent ask for the service address, read it back and wait for a yes. On confirmation the model calls <code>save_customer_details</code>, and the application patches the profile's <code>Contact</code> and <code>HvacService</code> traits.</p>
+          <p class="why">The tool takes an <code>addressConfirmed</code> flag. A model told to save only after confirmation still needs a field that records whether it did.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#2E7D5B">
+        <button class="row" style="--from:10%;--to:50%" data-dir="r" aria-expanded="false" aria-controls="h-a10">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A10</span><span class="chev">&#9656;</span></span><span class="t">Caller barges in</span></span>
+        </button>
+        <div class="detail" id="h-a10" hidden>
+          <p class="what">If the caller talks over the agent, ConversationRelay stops speaking and sends <code>interrupt</code> with the text spoken so far. The SDK cancels the stream, and the application truncates the stored reply to that text.</p>
+          <p class="why">Without the truncation, the model believes the caller heard the whole reply and answers questions the caller never asked.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#C42B72">
+        <button class="row" style="--from:30%;--to:50%" data-dir="l" aria-expanded="false" aria-controls="h-a11">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A11</span><span class="chev">&#9656;</span></span><span class="t">Goodbye, then hang up</span></span>
+        </button>
+        <div class="detail" id="h-a11" hidden>
+          <p class="what">When the caller is done, the model says goodbye and calls <code>end_call</code> in the same turn. After the goodbye has streamed, the application waits for its estimated speaking time plus a second and a half, then ends the call through the Calls REST API.</p>
+          <p class="why"><b>A timer, not an event.</b> ConversationRelay can report when the agent stops speaking, but the SDK version used does not pass those events to the application.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#C42B72">
+        <button class="row" style="--from:50%;--to:90%" data-dir="r" aria-expanded="false" aria-controls="h-a12">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A12</span><span class="chev">&#9656;</span></span><span class="t">Conversation closed</span></span>
+        </button>
+        <div class="detail" id="h-a12" hidden>
+          <p class="what">With the voice channel's <code>statusTimeouts</code> left null, the conversation closes when ConversationRelay's transcription stream ends. The application also sets it to <code>CLOSED</code> through the API as soon as the WebSocket drops.</p>
+          <p class="why"><b>Closing is what fires the end-of-call rule.</b> Voice timers run on transcription events, not call events, so a call in which nobody speaks stays <code>ACTIVE</code> indefinitely. The explicit close covers that case.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#2E6FA3">
+        <button class="row" style="--from:50%;--to:90%" data-dir="l" aria-expanded="false" aria-controls="h-a13">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">A13</span><span class="chev">&#9656;</span></span><span class="t">Post-call results arrive</span></span>
+        </button>
+        <div class="detail" id="h-a13" hidden>
+          <p class="what">Rule two runs Summary, Sentiment and HVAC Lead Qualification and posts all three to the same webhook. The application writes the lead result's purchase interest and rationale to the profile, and fills in address and reason only if the agent never saved them.</p>
+          <p class="why">Purchase interest is judged from the whole transcript by an operator, not by the agent mid-call.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lblock">
+    <h3>Flow B. A text message to the same number</h3>
+    <p class="lcap">Same agent, same profile, same conversation history. The reply is returned whole instead of streamed.</p>
+    <div class="bulk"><button data-bulk="open" data-flow="b">Expand all</button><button data-bulk="close" data-flow="b">Collapse</button></div>
+    <div class="lanes">
+      <div class="lane"><span class="dot far"></span><span>Caller</span></div>
+      <div class="lane"><span class="dot plat"></span><span>ConversationRelay</span></div>
+      <div class="lane"><span class="dot app"></span><span>Agent server</span></div>
+      <div class="lane"><span class="dot ai"></span><span>OpenAI</span></div>
+      <div class="lane"><span class="dot ci"></span><span>Orchestrator, Memory, Intelligence</span></div>
+    </div>
+    <div class="ladder" data-flow="b">
+      <div class="rails"><i style="left:10%"></i><i style="left:30%"></i><i style="left:50%"></i><i style="left:70%"></i><i style="left:90%"></i></div>
+      <div class="step" style="--acc:#2E7D5B">
+        <button class="row" style="--from:10%;--to:90%" data-dir="r" aria-expanded="false" aria-controls="h-b1">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">B01</span><span class="chev">&#9656;</span></span><span class="t">Caller texts the number</span></span>
+        </button>
+        <div class="detail" id="h-b1" hidden>
+          <p class="what">Two capture rules on the configuration, from any address to the number and from the number to any address, put the inbound text into the customer's conversation. Memory resolves the same profile a call from that phone would.</p>
+          <p class="why">The outbound rule is what threads the agent's reply into the same conversation.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#2E6FA3">
+        <button class="row" style="--from:50%;--to:90%" data-dir="l" aria-expanded="false" aria-controls="h-b2">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">B02</span><span class="chev">&#9656;</span></span><span class="t">Orchestrator notifies the server</span></span>
+        </button>
+        <div class="detail" id="h-b2" hidden>
+          <p class="what">The configuration's status callback posts the new communication to <code>/webhook</code>. The SDK's SMS channel fetches memory for the message and hands it to the application.</p>
+          <p class="why">SMS fetches memory on every message, because a text thread has no call boundary to cache against.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#C42B72">
+        <button class="row" style="--from:50%;--to:70%" data-dir="r" aria-expanded="false" aria-controls="h-b3">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">B03</span><span class="chev">&#9656;</span></span><span class="t">Agent turn runs to completion</span></span>
+        </button>
+        <div class="detail" id="h-b3" hidden>
+          <p class="what">The same prompt and tools as voice, with a note that the channel is text, so replies can run longer. The reply is generated whole rather than streamed.</p>
+          <p class="why">The end-call tool is not offered on SMS.</p>
+        </div>
+      </div>
+      <div class="step" style="--acc:#C42B72">
+        <button class="row" style="--from:10%;--to:50%" data-dir="l" aria-expanded="false" aria-controls="h-b4">
+          <span class="head2"></span><span class="wlabel"><span class="hdr"><span class="n">B04</span><span class="chev">&#9656;</span></span><span class="t">Reply is sent</span></span>
+        </button>
+        <div class="detail" id="h-b4" hidden>
+          <p class="what">The application returns the reply text and the SDK sends it as an SMS from the number. The outbound capture rule records it in the conversation.</p>
+          <p class="why">The conversation closes on the configuration's five-minute timeout, which fires the same end-of-call rule as a phone call.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="sec-head" id="setup"><span class="num"><b>03</b></span><h2>Setting this up in your own Twilio account, voice only</h2></div>
+
+  <p>The demo provisions everything with one script, but every step below can be done in the Console or the REST API, and the order matters. Each object refers to the one before it by ID: a conversation configuration names its memory store and its intelligence configurations, a rule names its operators, and the TwiML names the conversation configuration. Build from the bottom of that chain up and nothing has to be edited twice. Messaging is out of scope here; it adds capture rules and a status callback to the same configuration and is covered separately.</p>
+
+  <div class="wide">
+    <div class="topo deps">
+      <svg viewBox="0 0 1180 300" role="img" aria-label="Order of setup: addendum, memory store, trait group, operator, intelligence configuration, conversation configuration, application, phone number">
+        <defs>
+          <marker id="ar2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L8,4 L0,8 z" fill="#A8B7C0"></path>
+          </marker>
+        </defs>
+        <text class="glabel" x="14" y="28">ACCOUNT</text>
+        <text class="glabel" x="196" y="28">MEMORY</text>
+        <text class="glabel" x="420" y="28">INTELLIGENCE</text>
+        <text class="glabel" x="660" y="28">ORCHESTRATOR</text>
+        <text class="glabel" x="880" y="28">YOUR APP AND NUMBER</text>
+
+        <rect class="gbox" x="14" y="36" width="160" height="250"></rect>
+        <rect class="gbox" x="196" y="36" width="202" height="250"></rect>
+        <rect class="gbox" x="420" y="36" width="218" height="250"></rect>
+        <rect class="gbox" x="660" y="36" width="198" height="250"></rect>
+        <rect class="gbox" x="880" y="36" width="286" height="250"></rect>
+
+        <g><rect x="28" y="70" width="132" height="54" fill="#fff" stroke="#2E6FA3" stroke-width="1.5"></rect>
+          <text class="nlabel" x="40" y="93">AI/ML addendum</text><text class="nsub" x="40" y="110">STEP 1</text></g>
+        <g><rect x="28" y="196" width="132" height="54" fill="#fff" stroke="#2E6FA3" stroke-width="1.5"></rect>
+          <text class="nlabel" x="40" y="219">Standard API key</text><text class="nsub" x="40" y="236">STEP 1</text></g>
+
+        <g><rect x="210" y="70" width="174" height="54" fill="#fff" stroke="#2E7D5B" stroke-width="1.5"></rect>
+          <text class="nlabel" x="222" y="93">Memory store</text><text class="nsub" x="222" y="110">STEP 2, ASYNC</text></g>
+        <g><rect x="210" y="196" width="174" height="54" fill="#fff" stroke="#2E7D5B" stroke-width="1.5"></rect>
+          <text class="nlabel" x="222" y="219">Trait group schema</text><text class="nsub" x="222" y="236">STEP 3, ASYNC</text></g>
+
+        <g><rect x="434" y="70" width="190" height="54" fill="#fff" stroke="#2E6FA3" stroke-width="1.5"></rect>
+          <text class="nlabel" x="446" y="93">Custom operator</text><text class="nsub" x="446" y="110">STEP 4</text></g>
+        <g><rect x="434" y="196" width="190" height="54" fill="#fff" stroke="#2E6FA3" stroke-width="1.5"></rect>
+          <text class="nlabel" x="446" y="219">Intelligence config</text><text class="nsub" x="446" y="236">STEP 5, RULES</text></g>
+
+        <g><rect x="674" y="133" width="170" height="54" fill="#fff" stroke="#2E6FA3" stroke-width="1.5"></rect>
+          <text class="nlabel" x="686" y="156">Conversation config</text><text class="nsub" x="686" y="173">STEP 6, ASYNC</text></g>
+
+        <g><rect x="894" y="70" width="258" height="54" fill="#fff" stroke="#C42B72" stroke-width="1.5"></rect>
+          <text class="nlabel" x="906" y="93">Agent server, public WSS</text><text class="nsub" x="906" y="110">STEP 7</text></g>
+        <g><rect x="894" y="196" width="258" height="54" fill="#fff" stroke="#C42B72" stroke-width="1.5"></rect>
+          <text class="nlabel" x="906" y="219">Phone number voice URL</text><text class="nsub" x="906" y="236">STEP 8, THEN TEST IN 9</text></g>
+
+        <path class="edge" d="M297,124 L297,196" marker-end="url(#ar2)"></path>
+        <text class="elabel" x="304" y="164">storeId</text>
+        <path class="edge" d="M529,124 L529,196" marker-end="url(#ar2)"></path>
+        <text class="elabel" x="536" y="164">operator id</text>
+        <path class="edge" d="M384,97 L404,97 L404,150 L674,150" marker-end="url(#ar2)"></path>
+        <text class="elabel" x="560" y="144">memoryStoreId</text>
+        <path class="edge" d="M624,223 L650,223 L650,172 L674,172" marker-end="url(#ar2)"></path>
+        <text class="elabel" x="540" y="270">intelligenceConfigurationIds</text>
+        <path class="edge" d="M844,160 L868,160 L868,97 L894,97" marker-end="url(#ar2)"></path>
+        <text class="elabel" x="870" y="140">conversationConfiguration</text>
+        <path class="edge" d="M1023,124 L1023,196" marker-end="url(#ar2)"></path>
+        <text class="elabel" x="1030" y="164">/twiml URL</text>
+        <path class="edge dash" d="M160,97 L210,97" marker-end="url(#ar2)"></path>
+      </svg>
+    </div>
+    <p class="hint">Each arrow is an ID or URL the next object needs. Steps marked async return a status URL to poll before the object can be used.</p>
+  </div>
+
+  <div class="setup wide">
+
+    <div class="sstep" style="--acc:#2E6FA3">
+      <div class="shead"><span class="sn">STEP 01</span><h3>Accept the AI/ML addendum and create a standard API key</h3><span class="where">Console, once per account</span></div>
+      <p>ConversationRelay, the Orchestrator, Memory and Intelligence are all subject to the Predictive and Generative AI/ML Features Addendum. In the Console, open <b>Voice &gt; Settings &gt; Privacy &amp; Security</b>, accept it, and save. The ConversationRelay documentation lists it as a prerequisite to using the noun at all.</p>
+      <p>Create a <b>standard</b> API key under <b>API keys &amp; tokens</b>. The Conversations APIs take the key SID and secret as Basic auth; the Agent Connect SDK also needs the account's Auth Token to validate webhook signatures.</p>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/voice/conversationrelay/onboarding">ConversationRelay onboarding</a><a href="https://www.twilio.com/docs/conversations/agent-connect/quickstart">Agent Connect quickstart</a></div>
+      <p class="gotcha"><b>Key type matters.</b> The Agent Connect quickstart specifies a standard key. A restricted key works only for the resources it was granted and fails elsewhere with an authorization error, so prove a key against an endpoint it covers before debugging anything else.</p>
+    </div>
+
+    <div class="sstep" style="--acc:#2E7D5B">
+      <div class="shead"><span class="sn">STEP 02</span><h3>Create the memory store</h3><span class="where">Memory API or Console</span></div>
+      <p>The store holds customer profiles and the identity rules that match a caller to one. Create it first, because the conversation configuration names it and cannot resolve profiles without it.</p>
+<pre>POST https://memory.twilio.com/v1/ControlPlane/Stores
+{ "displayName": "hvac-concierge-memory", "description": "HVAC concierge demo" }
+<i># 202 Accepted: { "message": ..., "statusUrl": ... }</i></pre>
+      <p>The create is asynchronous and the response carries no store ID. Poll the <code>statusUrl</code> until it completes, then list stores and match on <code>displayName</code> to get the <code>mem_store_</code> ID. A new store comes with a <code>Contact</code> trait group and identity rules for <code>phone</code>, <code>email</code> and <code>chat</code>. The <code>phone</code> rule is what links a caller's number to a profile.</p>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/api/memory/store/create-store">Create a memory store</a><a href="https://www.twilio.com/docs/conversations/memory/key-terms">Memory key terms</a></div>
+    </div>
+
+    <div class="sstep" style="--acc:#2E7D5B">
+      <div class="shead"><span class="sn">STEP 03</span><h3>Declare the traits you will write</h3><span class="where">Memory API or Console</span></div>
+      <p>Memory accepts only traits that are declared in one of the store's trait groups. The default <code>Contact</code> group already covers name, phone and street address. Anything specific to the business goes in a new group before the application tries to write it.</p>
+<pre>POST https://memory.twilio.com/v1/ControlPlane/Stores/{storeId}/TraitGroups
+{ "displayName": "HvacService",
+  "traits": {
+    "reasonForCalling": { "dataType": "STRING" },
+    "serviceAddress":   { "dataType": "STRING" },
+    "addressConfirmed": { "dataType": "BOOLEAN" },
+    "purchaseInterest": { "dataType": "STRING" } } }</pre>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/api/memory/trait-group/create-trait-group">Create a trait group</a><a href="https://www.twilio.com/docs/api/memory/profile/patch-profile-traits">Patch profile traits</a></div>
+      <p class="gotcha"><b>Plan groups before you create them.</b> A trait cannot be moved from one group to another later, and <code>dataType</code> values are uppercase.</p>
+    </div>
+
+    <div class="sstep" style="--acc:#2E6FA3">
+      <div class="shead"><span class="sn">STEP 04</span><h3>Create any custom language operators</h3><span class="where">Intelligence API or Console</span></div>
+      <p>Twilio-authored operators such as Sentiment and Summary already exist on every account; list them to get their IDs. A custom operator is a prompt plus an output format. The demo's lead qualification operator returns JSON against a schema, with Memory context enabled so it can see the customer profile.</p>
+<pre>POST https://intelligence.twilio.com/v3/ControlPlane/Operators
+{ "displayName": "HVAC Lead Qualification", "author": "SELF",
+  "outputFormat": "JSON", "outputSchema": { "type": "object", "properties": { ... } },
+  "prompt": "You analyze a phone call ...",
+  "context": { "memory": { "enabled": true } } }</pre>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/conversations/intelligence/create-custom-language-operators">Create custom operators</a></div>
+      <p class="gotcha"><b>Schema limits.</b> The output schema is a structured-output schema: no <code>minLength</code>, no <code>pattern</code>, and no nullable enums. Use an explicit value such as <code>UNKNOWN</code> for absence.</p>
+    </div>
+
+    <div class="sstep" style="--acc:#2E6FA3">
+      <div class="shead"><span class="sn">STEP 05</span><h3>Create the intelligence configuration and its rules</h3><span class="where">Intelligence API or Console</span></div>
+      <p>An intelligence configuration is a list of rules, and each rule is a trigger, up to five operators, optional context and a webhook action. The demo uses two:</p>
+      <ul>
+        <li><b>Live:</b> trigger <code>COMMUNICATION</code> with <code>count: 1</code>, operator Sentiment. Fires on every turn.</li>
+        <li><b>Post-call:</b> trigger <code>CONVERSATION_END</code>, operators Summary, Sentiment and Lead Qualification, Memory context on.</li>
+      </ul>
+      <p>Both post to the application's <code>/webhooks/intelligence</code>. The payload carries the conversation ID, each operator's result, and reference IDs that include the CallSid, which is how the application matches a result to a call.</p>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/conversations/intelligence/create-intelligence-configuration">Create an intelligence configuration</a><a href="https://www.twilio.com/docs/conversations/intelligence/define-rules">Define rules</a><a href="https://www.twilio.com/docs/conversations/intelligence/integrate-results-with-application">Rule execution webhook</a></div>
+      <p class="gotcha"><b>The webhook URL is fixed at creation.</b> Create the configuration with the application's final public hostname, or update it once the hostname is known. Updates are a full replacement of the rules list.</p>
+    </div>
+
+    <div class="sstep" style="--acc:#2E6FA3">
+      <div class="shead"><span class="sn">STEP 06</span><h3>Create the conversation configuration</h3><span class="where">Conversations API or Console</span></div>
+      <p>This is the object the call is routed into, and it ties the others together.</p>
+<pre>POST https://conversations.twilio.com/v2/ControlPlane/Configurations
+{ "displayName": "hvac-concierge",
+  "conversationGroupingType": "GROUP_BY_PROFILE",
+  "memoryStoreId": "mem_store_...",
+  "intelligenceConfigurationIds": [ "intelligence_configuration_..." ],
+  "channelSettings": { "VOICE": { "captureRules": [] } } }
+<i># 202 Accepted: poll statusUrl, then list configurations and match displayName</i></pre>
+      <ul>
+        <li><b>Grouping:</b> <code>GROUP_BY_PROFILE</code> keeps a customer's calls, and later their texts, in one conversation. It cannot be changed after creation.</li>
+        <li><b>No voice capture rules.</b> With ConversationRelay the call joins the conversation through the TwiML in step 8. A capture rule on the same number starts a second transcription and bills speech-to-text twice.</li>
+        <li><b>Voice timeouts left null.</b> The conversation then closes when the call's transcription stream ends, which fires the <code>CONVERSATION_END</code> rule.</li>
+      </ul>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/conversations/orchestrator/quickstart">Orchestrator quickstart</a><a href="https://www.twilio.com/docs/conversations/orchestrator/concepts/core">Core concepts and grouping</a><a href="https://www.twilio.com/docs/conversations/orchestrator/concepts/ingestion">Ingestion modes</a><a href="https://www.twilio.com/docs/conversations/orchestrator/concepts/lifecycle">Conversation lifecycle</a></div>
+      <p class="gotcha"><b>The Orchestrator quickstart is written for passive capture.</b> Its Console steps tick <b>Set up automatic capture</b> on the voice number. For a ConversationRelay number, leave that box clear, or remove the rule afterwards.</p>
+    </div>
+
+    <div class="sstep" style="--acc:#C42B72">
+      <div class="shead"><span class="sn">STEP 07</span><h3>Run the agent server on a public hostname</h3><span class="where">Your infrastructure</span></div>
+      <p>Twilio has to reach the application over HTTPS for the TwiML webhook and over WSS for the ConversationRelay socket. The Agent Connect SDK reads its configuration from environment variables:</p>
+<pre>TWILIO_ACCOUNT_SID   TWILIO_AUTH_TOKEN   TWILIO_API_KEY   TWILIO_API_SECRET
+TWILIO_PHONE_NUMBER
+TWILIO_CONVERSATION_CONFIGURATION_ID   <i># from step 6</i>
+TWILIO_VOICE_PUBLIC_DOMAIN             <i># hostname only, no https://</i></pre>
+      <p>On startup the SDK reads the conversation configuration to learn its memory store, so the store ID does not need its own variable. It serves <code>/twiml</code>, the <code>/ws</code> WebSocket, the <code>&lt;Connect action&gt;</code> callback and the call status callback, and validates the Twilio signature on each.</p>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/conversations/agent-connect/quickstart">Agent Connect quickstart</a><a href="https://www.twilio.com/docs/voice/conversationrelay/websocket-messages">WebSocket messages</a></div>
+      <p class="gotcha"><b>Signature validation depends on the public URL.</b> Behind a proxy, the SDK rebuilds the URL from <code>X-Forwarded-Proto</code> and <code>X-Forwarded-Host</code>. If the proxy rewrites either, every webhook is rejected with a 403.</p>
+    </div>
+
+    <div class="sstep" style="--acc:#C42B72">
+      <div class="shead"><span class="sn">STEP 08</span><h3>Point the phone number at the application</h3><span class="where">Console or Phone Numbers API</span></div>
+      <p>Set the number's voice URL to <code>https://your-host/twiml</code> with method POST. The SDK answers with TwiML along these lines, which is the step that puts the call into the conversation configuration:</p>
+<pre>&lt;Response&gt;
+  &lt;Connect action="https://your-host/conversation-relay-callback"&gt;
+    &lt;ConversationRelay url="wss://your-host/ws"
+      conversationConfiguration="conv_configuration_..."
+      welcomeGreeting="Thanks for calling ..."
+      ttsProvider="ElevenLabs" transcriptionProvider="Deepgram" /&gt;
+  &lt;/Connect&gt;
+&lt;/Response&gt;</pre>
+      <p><code>conversationConfiguration</code> creates or resolves a conversation through the grouping rules. Passing <code>conversationId</code> instead joins a specific existing conversation and bypasses grouping, which is how a later handoff to a human keeps the whole call in one conversation.</p>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/voice/twiml/connect/conversationrelay">&lt;ConversationRelay&gt; reference</a><a href="https://www.twilio.com/docs/conversations/orchestrator/concepts/ingestion">Active TwiML for voice</a></div>
+    </div>
+
+    <div class="sstep" style="--acc:#2E7D5B">
+      <div class="shead"><span class="sn">STEP 09</span><h3>Test without a phone call, then with one</h3><span class="where">Verification</span></div>
+      <ul>
+        <li><b>Signed webhook first.</b> Send a simulated, signed voice webhook to <code>/twiml</code> and confirm a 200 with the expected TwiML. This proves the hostname, the signature check and the configuration ID without placing a billed call.</li>
+        <li><b>One real call.</b> Then list conversations under the configuration. Expect one conversation with two participants, the caller as <code>CUSTOMER</code> with a <code>profileId</code> and the number as <code>AGENT</code>, and one communication per turn.</li>
+        <li><b>After hang-up.</b> The conversation should read <code>CLOSED</code>, and the post-call operator results should reach the webhook within seconds.</li>
+      </ul>
+      <div class="reflinks"><a href="https://www.twilio.com/docs/conversations/orchestrator/concepts/profiles">How profiles resolve</a><a href="https://www.twilio.com/docs/voice/voice-insights/conversation-relay-summary">ConversationRelay call summary</a></div>
+      <p class="gotcha"><b>A missing profileId is not always an error.</b> Resolution runs asynchronously and best effort, so it can appear a moment after the participant does. It stays null for good only if resolution failed or the participant is not a customer.</p>
+    </div>
+
+  </div>
+  <div class="sec-head" id="config"><span class="num"><b>04</b></span><h2>How the Twilio objects are configured, and why</h2></div>
+
+  <p>For the demo, every object is created by one idempotent provisioning script whose specification sits at the top of the file as plain data, so the configuration can be read before any API code. Running it again finds each object by display name, creates what is missing and updates what has drifted.</p>
+
+  <div class="wide">
+    <table>
+      <thead><tr><th>Object</th><th>Setting</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Conversation configuration</td><td><code>GROUP_BY_PROFILE</code></td><td>A call and a text from the same phone share one conversation and one history.</td></tr>
+        <tr><td>Conversation configuration</td><td>No voice capture rules</td><td>ConversationRelay already transcribes the call and routes it in through <code>conversationConfiguration</code>. A voice capture rule would start a second transcription stream and bill speech-to-text twice.</td></tr>
+        <tr><td>Conversation configuration</td><td>Two SMS capture rules, both directions</td><td>The inbound rule captures the customer's text; the outbound rule threads the agent's reply into the same conversation.</td></tr>
+        <tr><td>Conversation configuration</td><td>Voice <code>statusTimeouts</code> null</td><td>The conversation closes when the call's transcription stream ends, which fires the end-of-call rule. The application also closes it explicitly, because a call with no speech never ends a transcription stream.</td></tr>
+        <tr><td>Memory store</td><td><code>HvacService</code> trait group</td><td>Memory rejects traits that are not declared in the store's schema, so the group exists before the application writes to it.</td></tr>
+        <tr><td>Intelligence rule 1</td><td><code>COMMUNICATION</code>, Sentiment</td><td>Live sentiment for the console, one result per utterance.</td></tr>
+        <tr><td>Intelligence rule 2</td><td><code>CONVERSATION_END</code>, Summary, Sentiment, Lead Qualification, Memory context on</td><td>Post-call results with the customer profile available to the operators.</td></tr>
+        <tr><td>Lead Qualification operator</td><td>Custom, JSON output, enums use <code>UNKNOWN</code></td><td>Structured output the application can write straight to traits. The operator schema does not accept nullable enums, so absence is an explicit value.</td></tr>
+        <tr><td>Phone number</td><td>Voice URL to <code>/twiml</code>, kept in an existing 10DLC Messaging Service</td><td>Voice reaches the application directly; SMS reaches it through the Orchestrator, so the Messaging Service needs no inbound webhook.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-head" id="choices"><span class="num"><b>05</b></span><h2>Design choices worth teaching</h2></div>
+
+  <p><b>The application never handles audio.</b> ConversationRelay owns speech-to-text, text-to-speech, endpointing and barge-in. The application's contract with it is text over a WebSocket, and every speech setting is a TwiML attribute. That is why the demo can expose a TwiML builder: changing the voice, the transcription model or the interruption sensitivity is a configuration change, not a code change.</p>
+
+  <p><b>Stream the reply, and measure the first token.</b> The caller's wait is the time from the end of their speech to the start of the agent's. Streaming tokens into ConversationRelay lets speech start on the first sentence. The application measures time to first token on its side; Voice Insights adds the speech-to-text, text-to-speech and network legs from Twilio's side, and every call in the console links to it.</p>
+
+  <p><b>Facts from the agent, judgement from Intelligence.</b> The agent's tool saves what the caller stated: name, confirmed address, reason, service type. Purchase interest is a judgement about the whole call, so it comes from a language operator that reads the full transcript after the conversation closes. The two writes go to the same profile from different sources, and the console shows both.</p>
+
+  <p><b>Close the conversation on hang-up.</b> End-of-call Intelligence runs when the conversation closes, not when the call ends. With voice timeouts left null the conversation closes when the transcription stream ends; the application also closes it as soon as the WebSocket drops, because voice timers run on transcription events and a silent call would otherwise stay open.</p>
+
+  <p><b>Rewrite history on barge-in.</b> When the caller interrupts, the chat history is truncated to what they actually heard. Skipping this step is the most common cause of a voice agent answering a question nobody asked.</p>
+
+  <p><b>Spell numbers in code, not only in the prompt.</b> The prompt asks for ZIP codes digit by digit, and a stream filter enforces it, because a model instruction alone is not reliable and text-to-speech engines read five-digit numbers as quantities.</p>
+  <div class="sec-head" id="open"><span class="num"><b>06</b></span><h2>Open items</h2></div>
+
+  <p>Each of these was observed in the demo or read from documentation, but not confirmed as platform behaviour.</p>
+
+  <ul>
+    <li><strong>Hang-up timing is an estimate.</strong> The application waits for roughly 2.6 words per second of goodbye plus 1.5 seconds. A slower voice or a longer goodbye can be cut off, and a fast one leaves a pause. ConversationRelay's <code>speaker-events</code> subscription would give an exact end-of-speech signal; using it needs a version of the Agent Connect SDK that forwards those messages.</li>
+    <li><strong>How quickly a closed conversation fires its end-of-call rule.</strong> In a related build, results arrived about two seconds after an explicit close on one call and about four and a half minutes later on another, where the conversation stayed active after the hang-up. The demo closes explicitly to avoid the second case.</li>
+    <li><strong>How many communications a voice turn produces.</strong> The lifecycle documentation warns that a <code>COMMUNICATION</code> trigger fires per text-to-speech fragment. On a measured demo call with streamed replies, each agent turn was one communication. Whether that holds for every reply shape, such as a reply split by an interruption, is not confirmed.</li>
+    <li><strong>Reasoning effort on the model.</strong> The demo runs the model at low reasoning effort. With reasoning off, the agent skipped the address question and saved details before the caller confirmed them. Whether a faster setting holds up with a stricter prompt is untested.</li>
+    <li><strong>Profile resolution on the first utterance.</strong> The documentation states that resolution is asynchronous and best effort, so on a first-time caller the profile can be missing for the opening seconds of the call. The agent's save tool reports that rather than failing silently, but the window has not been measured.</li>
+    <li><strong>Which Console path holds the addendum.</strong> The ConversationRelay onboarding guide gives <b>Voice &gt; Settings &gt; Privacy &amp; Security</b> for the current Console and <b>Voice &gt; Settings &gt; General</b> for the legacy one. Console navigation moves; search for the addendum by name if neither path matches.</li>
+  </ul>
+
+  <div class="callout">
+    <p class="ct">Deliberately absent</p>
+    <p>No pricing appears on this page, and no account identifiers, phone numbers or customer names. The business in the scenario is invented. Twilio list prices are negotiated per account and they move, so the Twilio pricing pages carry the current figures.</p>
+  </div>
+
+  <footer>
+    <p>Compiled 22 October 2026.</p>
+    <p>Sourced from Twilio public documentation and from a working demo build. Product behaviour described here was either read from documentation or observed in that build, and the open items above say which.</p>
+    <p>Anything that could not be confirmed is recorded as an open item rather than presented as fact.</p>
+  </footer>
+</div>
+<script>
+(function () {
+  var panels = document.getElementById('nodepanels');
+
+  function closeAllNodes() {
+    document.querySelectorAll('.node').forEach(function (n) {
+      n.classList.remove('sel');
+      n.setAttribute('aria-expanded', 'false');
+    });
+    if (panels) {
+      panels.querySelectorAll('.node-detail').forEach(function (d) { d.hidden = true; });
+    }
+  }
+
+  document.querySelectorAll('.node').forEach(function (node) {
+    function toggle() {
+      var open = node.classList.contains('sel');
+      closeAllNodes();
+      if (open) return;
+      node.classList.add('sel');
+      node.setAttribute('aria-expanded', 'true');
+      var detail = document.getElementById(node.getAttribute('aria-controls'));
+      if (detail) detail.hidden = false;
+    }
+    node.addEventListener('click', toggle);
+    node.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+
+  function setHop(step, open) {
+    var row = step.querySelector('.row');
+    var detail = document.getElementById(row.getAttribute('aria-controls'));
+    step.classList.toggle('open', open);
+    row.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (detail) detail.hidden = !open;
+  }
+
+  document.querySelectorAll('.ladder .step').forEach(function (step) {
+    step.querySelector('.row').addEventListener('click', function () {
+      setHop(step, !step.classList.contains('open'));
+    });
+  });
+
+  document.querySelectorAll('.bulk button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('data-bulk') === 'open';
+      var flow = btn.getAttribute('data-flow');
+      var ladder = document.querySelector('.ladder[data-flow="' + flow + '"]');
+      if (!ladder) return;
+      ladder.querySelectorAll('.step').forEach(function (s) { setHop(s, open); });
+    });
+  });
+
+  function openFromHash() {
+    var id = window.location.hash.replace('#', '');
+    if (!id) return;
+    var detail = document.getElementById(id);
+    if (!detail) return;
+    var step = detail.closest('.step');
+    if (step) {
+      setHop(step, true);
+      step.scrollIntoView({ block: 'center' });
+      return;
+    }
+    if (detail.classList.contains('node-detail')) {
+      var node = document.querySelector('.node[aria-controls="' + id + '"]');
+      if (node) node.dispatchEvent(new Event('click'));
+    }
+  }
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
+})();
+</script>
+</body>
+</html>

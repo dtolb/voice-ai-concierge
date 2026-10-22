@@ -1,0 +1,6 @@
+node_modules
+dist
+data
+.env
+provision/requests.jsonl
+docs/page/.build/*.png
